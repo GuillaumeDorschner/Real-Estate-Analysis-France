@@ -1,2 +1,10 @@
 *.pyc
 *.pyo
+valeur_fonciere/analyse/__pycache__/test.cpython-311.pyc
+django_project/__pycache__/wsgi.cpython-311.pyc
+django_project/__pycache__/settings.cpython-311.pyc
+django_project/__pycache__/__init__.cpython-311.pyc
+django_project/__pycache__/urls.cpython-311.pyc
+valeur_fonciere/__pycache__/__init__.cpython-311.pyc
+valeur_fonciere/__pycache__/urls.cpython-311.pyc
+valeur_fonciere/__pycache__/views.cpython-311.pyc
