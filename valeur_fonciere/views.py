@@ -2,18 +2,26 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .analyse.test import analyse_data
+import os
 
 def index(request):
     return render(request, "index.html")
 
 def analyse(request):
-    # Obtenir l'image analysée
-    plot_data = analyse_data(request)
 
-    # Ajouter l'image au contexte
+
+    directory = './data/'
+    pages = []
+    for filename in os.listdir(directory):
+        if os.path.isfile(os.path.join(directory, filename)):
+            pages.append(filename)
+            print(filename)
+
+    print(pages)
+
     context = {
         "var": "heyyy",
-        "plot": plot_data
+        "pages": pages
     }
     
     # Charger le template et retourner la réponse
