@@ -37,7 +37,7 @@ python-versions = ">=3.6"
 
 [[package]]
 name = "django"
-version = "3.2.13"
+version = "4.2.1"
 description = "A high-level Python Web framework that encourages rapid development and clean, pragmatic design."
 category = "main"
 optional = false

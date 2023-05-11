@@ -1,30 +1,7 @@
-# Python on Replit
+# Analyse des Données de Demandes de Valeurs Foncières (DVF)
 
-This is a template to get you started with Python on Replit. It's ready to go so you can just hit run and start coding!
+Ce projet porte sur l'analyse des données des transactions immobilières intervenues au cours des cinq dernières années sur le territoire métropolitain français et les DOM-TOM, à l’exception de l’Alsace, de la Moselle et de Mayotte. Ces données sont tirées des actes notariés et des informations cadastrales, et sont disponibles en open data.
 
-## Running the repl
+# Objectif du projet
 
-1. Setup a new secret environment variable (the lock icon) where the key is `SECRET_KEY` and the value is
-   a randomly generated token of 32 bits of randomnese. To generate such a token type this into the shell and hit Enter:
-```
-python
-import secrets
-secrets.token_urlsafe(32)
-```
-2. Hit run!
-
-See this 1 minute video for a walkthrough: [https://www.loom.com/share/ecc4e738149f4d1db3bcff01758b3e71](https://www.loom.com/share/341b5574d12040fb9fcbbff150777f1c)
-
-## Installing packages
-
-To add packages to your repl, you can just import directly in the file you want to use the package in, and it will automatically be installed when you press the run button. Like below:
-```python
-import math
-import pandas as pd
-```
-
-You could also install packages by using the Replit packager interface in the left sidebar.
-
-## Help
-
-If you need help you might be able to find an answer on our [docs](https://docs.replit.com) page. Feel free to report bugs and give us feedback [here](https://replit.com/support).
+L'objectif de ce travail est de réaliser une analyse détaillée des données, en se concentrant particulièrement sur l'année 2022. L'analyse devrait inclure au moins une vingtaine d'interprétations et de visualisations pertinentes, ainsi que cinq interprétations et visualisations comparant 2022 avec au moins une autre année, en particulier avant la pandémie de COVID.
