@@ -34,12 +34,12 @@ def about(request):
     return render(request, "about.html")
 
 def analyse_annee(request, annee):
-    if os.path.isfile('./data/valeursfoncieres-'+annee+'.txt'):
-        f = open('./data/valeursfoncieres-'+annee+'.txt', 'r')
+    if os.path.isfile('./data/'+annee+'.txt'):
+        f = open('./data/'+annee+'.txt', 'r')
         data = f.read()
     context = {
         "var":data
     }
 
-    template = loader.get_template("analyse/index.html")
+    template = loader.get_template("analyse/template_annee.html")
     return HttpResponse(template.render(context, request))
