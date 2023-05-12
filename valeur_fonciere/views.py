@@ -11,7 +11,7 @@ def index(request):
 def analyse(request):
 
 
-    directory = './data/'
+    directory = './data/annee_traitee'
     pages = []
     for filename in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, filename)):
@@ -34,12 +34,16 @@ def about(request):
     return render(request, "about.html")
 
 def analyse_annee(request, annee):
-    if os.path.isfile('./data/'+annee+'.txt'):
-        f = open('./data/'+annee+'.txt', 'r')
+    print('./data/annee_traitee/'+annee+'.txt')
+    if os.path.isfile('./data/annee_traitee/'+annee+'.txt'):
+        f = open('./data/annee_traitee/'+annee+'.txt', 'r')
         data = f.read()
-    context = {
-        "var":data
+        print(data)
+        context = {
+        "var": data
     }
+    else :
+        context = {"var":"Pas de données pour cette année"}
 
     template = loader.get_template("analyse/template_annee.html")
     return HttpResponse(template.render(context, request))
