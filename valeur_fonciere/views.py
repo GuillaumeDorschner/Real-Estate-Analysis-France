@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
 from .analyse.test import analyse_data
+from .analyse.graph import graph
 import os
 import pandas as pd
 
@@ -21,8 +22,7 @@ def analyse(request):
     print(pages)
 
     context = {
-        "var": "heyyy",
-        "pages": pages
+        "pages": pages,
     }
     
     # Charger le template et retourner la réponse
@@ -40,8 +40,9 @@ def analyse_annee(request, annee):
         data = f.read()
         print(data)
         context = {
-        "var": data
-    }
+            "var": data,
+            "graph": graph()
+        }
     else :
         context = {"var":"Pas de données pour cette année"}
 
