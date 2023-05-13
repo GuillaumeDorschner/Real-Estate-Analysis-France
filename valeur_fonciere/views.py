@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
-from .analyse.test import analyse_data
-from .analyse.graph import graph
+from .analyse.graph import *
 import os
 import pandas as pd
 
@@ -34,17 +33,15 @@ def about(request):
     return render(request, "about.html")
 
 def analyse_annee(request, annee):
-    print('./data/annee_traitee/'+annee+'.txt')
-    if os.path.isfile('./data/annee_traitee/'+annee+'.txt'):
-        f = open('./data/annee_traitee/'+annee+'.txt', 'r')
-        data = f.read()
-        print(data)
+    if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
+        df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
         context = {
-            "var": data,
-            "graph": graph()
+            "graph": graph_region('regions',df),
+            "Vente_mois" : Vente_par_Mois(df),
         }
     else :
         context = {"var":"Pas de données pour cette année"}
 
     template = loader.get_template("analyse/template_annee.html")
     return HttpResponse(template.render(context, request))
+
