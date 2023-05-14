@@ -38,6 +38,7 @@ def analyse_annee(request, annee):
         context = {
             "graph": graph_region('regions',df),
             "Vente_mois" : Vente_par_Mois(df),
+            "topPlusMoinsCher" : topPlusMoinsCher(df),
         }
     else :
         context = {"var":"Pas de données pour cette année"}
