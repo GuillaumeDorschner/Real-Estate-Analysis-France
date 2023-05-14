@@ -16,9 +16,6 @@ def analyse(request):
     for filename in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, filename)):
             pages.append(filename.split('.')[0])
-            print(filename)
-
-    print(pages)
 
     context = {
         "pages": pages,

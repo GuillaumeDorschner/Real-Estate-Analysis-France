@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Analyse 🔍</title>
+</head>
+
+<body>
+
+
+
+  <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
+    <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+      <header class="mb-8 flex items-center justify-between py-4 md:mb-12 md:py-8 xl:mb-16">
+
+        <a href="/" class="text-black-800 inline-flex items-center gap-2.5 text-2xl font-bold md:text-3xl"
+          aria-label="logo">
+          <svg width="95" height="94" viewBox="0 0 95 94" class="h-auto w-6 text-indigo-500" fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M96 0V47L48 94H0V47L48 0H96Z" />
+          </svg>
+          Foncière Analytica
+        </a>
+
+
+        <nav class="hidden gap-12 lg:flex">
+          <a href="/"
+            class="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">Home</a>
+          <a href="/analyse" class="text-lg font-semibold text-indigo-500">Analyse</a>
+          <a href="/about"
+            class="text-lg font-semibold text-gray-600 transition duration-100 hover:text-indigo-500 active:text-indigo-700">About</a>
+        </nav>
+        <a href="#" class=""></a>
+
+      </header>
+    </div>
+  </div>
+
+  <!-- template-->
+
+
+
+  <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
+    <h2>graph de france sur ...</h2>
+    {{graph|safe}}
+
+    <h2>Nombre de Vente par mois</h2>
+    {{Vente_mois |safe}}
+ 
+  </div>
+
+  
+  
+  <!-- template-->
+
+  <div class="bg-gray-900">
+    <footer class="mx-auto max-w-screen-2xl px-4 md:px-8">
+      <div class="mb-16 grid grid-cols-2 gap-12 pt-10 md:grid-cols-4 lg:grid-cols-6 lg:gap-8 lg:pt-12">
+        <div class="col-span-full lg:col-span-2">
+
+        </div>
+
+
+
+        <div>
+          <div class="mb-4 font-bold uppercase tracking-widest text-gray-100">Legal</div>
+
+          <nav class="flex flex-col gap-4">
+
+            <div>
+              <a href="#"
+                class="text-gray-400 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Politique
+                de confidentialité</a>
+            </div>
+
+            <div>
+              <a href="#"
+                class="text-gray-400 transition duration-100 hover:text-indigo-500 active:text-indigo-600">Paramètres
+                des cookies</a>
+            </div>
+          </nav>
+        </div>
+
+      </div>
+
+      <div class="border-t border-gray-800 py-8 text-center text-sm text-gray-400">© 2023 - Analyse Foncière</div>
+    </footer>
+  </div>
+
+</body>
+
+</html>
