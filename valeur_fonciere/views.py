@@ -16,9 +16,6 @@ def analyse(request):
     for filename in os.listdir(directory):
         if os.path.isfile(os.path.join(directory, filename)):
             pages.append(filename.split('.')[0])
-            print(filename)
-
-    print(pages)
 
     context = {
         "pages": pages,
@@ -32,7 +29,7 @@ def analyse(request):
 def about(request):
     return render(request, "about.html")
 
-def analyse_annee(request, annee):
+def analyse_intra(request, annee):
     if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
         df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
         context = {
@@ -43,6 +40,21 @@ def analyse_annee(request, annee):
     else :
         context = {"var":"Pas de données pour cette année"}
 
-    template = loader.get_template("analyse/template_annee.html")
+    template = loader.get_template("analyse/template_intra.html")
+    return HttpResponse(template.render(context, request))
+
+
+def analyse_inter(request, annee):
+    if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
+        df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
+        context = {
+            "graph": graph_region('regions',df),
+            "Vente_mois" : Vente_par_Mois(df),
+            "topPlusMoinsCher" : topPlusMoinsCher(df),
+        }
+    else :
+        context = {"var":"Pas de données pour cette année"}
+
+    template = loader.get_template("analyse/template_inter.html")
     return HttpResponse(template.render(context, request))
 
