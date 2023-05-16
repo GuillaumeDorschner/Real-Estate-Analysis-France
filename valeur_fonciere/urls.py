@@ -7,4 +7,5 @@ urlpatterns = [
     path('analyse/', views.analyse, name='analyse'),
     path('analyse/inter/', views.analyse_inter, name='analyse_inter'),
     path('analyse/<str:annee>/', views.analyse_intra, name='analyse_intra'),
+    path('get_graph/<str:annee>/<str:graph>/<str:filtre>/', views.get_graph, name='get_graph')
 ]
