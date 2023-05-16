@@ -1,11 +1,11 @@
+import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
+from django.http import Http404
 from .analyse.graph import *
-import time
-import os
 import pandas as pd
-from django.http import JsonResponse
+
 
 
 
@@ -97,4 +97,4 @@ def get_graph(request, annee, graph, filtre):
     if graph == "repartionTypeBien":
         return repartionTypeBien(request, dfTemp, filtre)
     else:
-        return JsonResponse({"graph": "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"})
+        raise Http404("Graph does not exist")
