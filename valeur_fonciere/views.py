@@ -68,9 +68,10 @@ def analyse_inter(request):
     return None
 
 def get_graph(request, annee, graph, filtre):
-    if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
-        df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
-        if graph == 'graph_region' and filtre == 'regions':
-            graph_url = graph_region(filtre,df)
-            return JsonResponse({'graph_url': graph_url})
-    return JsonResponse({'graph_url': 'none'})
+    time.sleep(1)
+    # if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
+    #     df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
+    #     if graph == 'graph_region' and filtre == 'regions':
+    #         graph_url = graph_region(filtre,df)
+    #         return JsonResponse({'graph_url': graph_url})
+    return JsonResponse({'graph_url': 'https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg'})
