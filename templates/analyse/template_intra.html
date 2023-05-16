@@ -28,7 +28,7 @@
           });
   
           $.ajax({
-              url: '/get_graph/'+ "{{annee}}" +'/graph2',
+              url: '/get_graph/'+ "{{annee}}" +'/graph_region/regions',
               success: function(data) {
                   $('#loading_graph2').hide();
                   $('#content_graph2').show();
@@ -92,6 +92,8 @@
         <h2>First graph</h2>
       </div>
     </div>
+
+    bla bla bla
   
     <div id="loading_graph2" class="loading" style="display: none;">
       <h2>Loading second graph...</h2>
