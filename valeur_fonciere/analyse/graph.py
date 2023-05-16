@@ -48,18 +48,15 @@ def graph_region(zone:str = 'departements',df:pd.DataFrame = None):
 
 def Vente_par_Mois(df:pd.DataFrame):
 
-    print("debut")
-    # df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
+    df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
 
-    # plt.title('Nombre de ventes répartis par mois')
-    # plt.plot(df["Date mutation"].value_counts()[df['Date mutation'].unique()])
-    # plt.xticks(rotation=45)
-    # plt.xlabel('Mois')
-    # plt.ylabel('Nombre de ventes')
-    # print("milieu")
+    plt.title('Nombre de ventes répartis par mois')
+    plt.plot(df["Date mutation"].value_counts()[df['Date mutation'].unique()])
+    plt.xticks(rotation=45)
+    plt.xlabel('Mois')
+    plt.ylabel('Nombre de ventes')
 
-    # imgdata = StringIO()
-    # plt.savefig(imgdata, format='svg')
+    imgdata = StringIO()
+    plt.savefig(imgdata, format='svg')
 
-    print("fin")
     return imgdata.getvalue()

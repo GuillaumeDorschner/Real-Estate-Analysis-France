@@ -91,6 +91,4 @@ def analyse_inter(request):
     return None
 
 def get_graph(request, annee, graph, filtre):
-    Vente_par_Mois(df[annee])
-    
-    return JsonResponse({"graph": graph_region('regions',df[annee])})
+    return JsonResponse({"graph": Vente_par_Mois(df[2022])})

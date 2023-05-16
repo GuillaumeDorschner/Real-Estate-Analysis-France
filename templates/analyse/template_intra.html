@@ -13,7 +13,7 @@
           $('.loading').show();
           $('.content').hide();
 
-          load
+          load();
   
           $.ajax({
               url: '/get_graph/'+ "{{annee}}" +'/graph_region/regions',
@@ -43,6 +43,22 @@
               }
           });
       });
+
+      function load() {
+          $.ajax({
+              url: '/get_graph/'+ "{{annee}}" +'/graph_region/regions',
+              success: function(data) {
+                  $('#loading_graph1').hide();
+                  $('#content_graph1').show();
+                  $('#graph_container1').html('<img src="' + data.graph_url + '">');
+              },
+              error: function() {
+                  $('#loading_graph1').hide();
+                  $('#content_graph1').show();
+                  $('#graph_container1').html('Error occurred while loading the first graph');
+              }
+          });
+      }
   </script>
 </head>
 
