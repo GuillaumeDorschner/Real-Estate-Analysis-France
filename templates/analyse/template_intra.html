@@ -10,26 +10,34 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
       $(document).ready(function() {
-          // Affiche le div de chargement
-          $('#loading').show();
-          // Cache le div de contenu
-          $('#content').hide();
+          $('.loading').show();
+          $('.content').hide();
   
           $.ajax({
               url: '/get_graph/'+ "{{annee}}" +'/graph_region/regions',
               success: function(data) {
-                  // Cache le div de chargement
-                  $('#loading').hide();
-                  // Affiche le div de contenu
-                  $('#content').show();
-                  $('#graph_container').html('<img src="' + data.graph_url + '">');
+                  $('#loading_graph1').hide();
+                  $('#content_graph1').show();
+                  $('#graph_container1').html('<img src="' + data.graph_url + '">');
               },
               error: function() {
-                  // Cache le div de chargement en cas d'erreur
-                  $('#loading').hide();
-                  // Affiche un message d'erreur dans le div de contenu
-                  $('#content').show();
-                  $('#graph_container').html('Error occurred while loading the data.');
+                  $('#loading_graph1').hide();
+                  $('#content_graph1').show();
+                  $('#graph_container1').html('Error occurred while loading the first graph');
+              }
+          });
+  
+          $.ajax({
+              url: '/get_graph/'+ "{{annee}}" +'/graph2',
+              success: function(data) {
+                  $('#loading_graph2').hide();
+                  $('#content_graph2').show();
+                  $('#graph_container2').html('<img src="' + data.graph_url + '">');
+              },
+              error: function() {
+                  $('#loading_graph2').hide();
+                  $('#content_graph2').show();
+                  $('#graph_container2').html('Error occurred while loading the second graph');
               }
           });
       });
@@ -75,19 +83,23 @@
   <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
     <h1>Welcome to my site!</h1>
   
-    <div id="loading" style="display: none;">
-      <h2>Loading...</h2>
+    <div id="loading_graph1" class="loading" style="display: none;">
+      <h2>Loading first graph...</h2>
     </div>
   
-    <div id="content" style="display: none;">
-      <div id="graph_container">
-        <h2>graph de france sur ...</h2>
-        <!-- Le graphique sera inséré ici par le script JavaScript -->
+    <div id="content_graph1" class="content" style="display: none;">
+      <div id="graph_container1">
+        <h2>First graph</h2>
       </div>
+    </div>
   
-      <div id="graph_container">
-        <h2>Nombre de Vente par mois</h2>
-        <!-- Le graphique de vente par mois sera inséré ici -->
+    <div id="loading_graph2" class="loading" style="display: none;">
+      <h2>Loading second graph...</h2>
+    </div>
+  
+    <div id="content_graph2" class="content" style="display: none;">
+      <div id="graph_container2">
+        <h2>Second graph</h2>
       </div>
     </div>
   </div>
