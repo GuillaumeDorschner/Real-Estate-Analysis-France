@@ -2,10 +2,16 @@ import folium
 import json
 import random
 import matplotlib.pyplot as plt
+import base64
 import matplotlib.colors as mcolors
 from io import StringIO
 import pandas as pd
+from io import BytesIO
 from colour import Color
+import matplotlib
+from django.http import JsonResponse
+matplotlib.use('Agg')
+
 
 def graph_region(zone:str = 'departements',df:pd.DataFrame = None):
     """Génère une carte de France avec les départements ou des regions colorés en fonction du nombre de vente (non propoertionnel)
@@ -60,3 +66,17 @@ def Vente_par_Mois(df:pd.DataFrame):
     plt.savefig(imgdata, format='svg')
 
     return imgdata.getvalue()
+
+def repartionTypeBien(request, df, filtre):
+    type_counts = df['Type local'].value_counts()
+    fig, ax = plt.subplots(figsize=(10,10))
+    type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
+    ax.set_ylabel('')
+    ax.set_title('Répartition des types de biens')
+
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+
+    return JsonResponse({"graph": image_base64})

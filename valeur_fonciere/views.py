@@ -8,6 +8,7 @@ import pandas as pd
 from django.http import JsonResponse
 
 
+
 print("Loading data...")
 
 directory = './data/annee_traitee'
@@ -19,7 +20,7 @@ for filename in os.listdir(directory):
 
 df ={} 
 
-df[2022] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
+df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
 # # import the csv data
 # directory = './data/annee_traitee'
@@ -90,6 +91,10 @@ def analyse_inter(request):
     return None
 
 def get_graph(request, annee, graph, filtre):
-    time.sleep(1)
-    return JsonResponse({"graph": "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"})
-    # return JsonResponse({"graph": Vente_par_Mois(df[2022])})
+
+    dfTemp = df[annee]
+
+    if graph == "repartionTypeBien":
+        return repartionTypeBien(request, dfTemp, filtre)
+    else:
+        return JsonResponse({"graph": "https://t4.ftcdn.net/jpg/00/97/58/97/360_F_97589769_t45CqXyzjz0KXwoBZT9PRaWGHRk5hQqQ.jpg"})
