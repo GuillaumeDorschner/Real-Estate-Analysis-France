@@ -11,6 +11,8 @@ import pandas as pd
 
 print("Loading data...")
 
+# -------------test data----------------
+
 directory = './data/annee_traitee'
 pages = []
 
@@ -22,6 +24,9 @@ df ={}
 
 df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
+# -------------all data----------------
+
+
 # # import the csv data
 # directory = './data/annee_traitee'
 # pages = []
@@ -30,10 +35,10 @@ df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_m
 #     if os.path.isfile(os.path.join(directory, filename)):
 #         pages.append(filename.split('.')[0])
 
-# df = []
+# df = {}
 
 # for annee in pages:
-#     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
+#     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0,  low_memory=False)
 
 
 print("Data loaded ✅")
