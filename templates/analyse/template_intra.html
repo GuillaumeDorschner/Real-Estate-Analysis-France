@@ -19,7 +19,13 @@
           success: function (data) {
             $(loadingId).hide();
             $(contentId).show();
-            $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+            if (graph == 'heatMap') {
+              // Assuming 'data.graph' contains the URL of the heatmap
+              $(containerId).html('<iframe src="' + data.graph + '" width="100%" height="600px"></iframe>');
+            }
+            else {
+              $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+            }
           },
           error: function () {
             $(loadingId).hide();
@@ -27,11 +33,12 @@
             $(containerId).html('Error occurred while loading the graph');
           }
         });
+
       }
 
       loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien');
       loadGraph('#loading_graph2', '#content_graph2', '#graph_container2', 'repartionTypeBien');
-      loadGraph('#loading_graph3', '#content_graph3', '#graph_container3', 'repartionTypeBien');
+      loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap');
     });
   </script>
 
@@ -100,13 +107,13 @@
 
     autre blaksdlqjflksjdl
 
-    <div id="loading_graph3" class="loading" style="display: none;">
-      <h2>Loading second graph...</h2>
+    <div id="loading_heatmap" class="loading" style="display: none;">
+      <h2>Loading heatmap...</h2>
     </div>
 
-    <div id="content_graph3" class="content" style="display: none;">
-      <div id="graph_container3">
-        <h2>Second graph</h2>
+    <div id="content_heatmap" class="content" style="display: none;">
+      <div id="heatmap_container">
+        <h2>Heatmap</h2>
       </div>
     </div>
 

@@ -96,5 +96,7 @@ def get_graph(request, annee, graph, filtre):
 
     if graph == "repartionTypeBien":
         return repartionTypeBien(request, dfTemp, filtre)
+    elif graph == "heatMap":
+        return heatmap(request, dfTemp, filtre)
     else:
         raise Http404("Graph does not exist")

@@ -10,6 +10,8 @@ from io import BytesIO
 from colour import Color
 import matplotlib
 from django.http import JsonResponse
+from django.http import FileResponse
+from branca.colormap import linear
 matplotlib.use('Agg')
 
 
@@ -80,3 +82,49 @@ def repartionTypeBien(request, df, filtre):
     image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
 
     return JsonResponse({"graph": image_base64})
+
+
+def heatmap(request, df, filtre):
+
+    print("heatmap")
+    property_changes = df['Code departement'].value_counts().reset_index()
+    property_changes.columns = ['Code', 'property_changes']
+
+    property_dict = property_changes.set_index('Code')['property_changes'].to_dict()
+
+    with open('./data/departements.geojson') as f:
+        data = json.load(f)
+
+    colormap = linear.YlOrRd_09.scale(
+        property_changes.property_changes.min(),
+        property_changes.property_changes.max())
+
+    for feature in data['features']:
+        feature['properties']['property_changes'] = property_dict.get(feature['properties']['code'], None)
+
+    def style_function(feature):
+        property_changes = feature['properties']['property_changes']
+        return {
+            'fillOpacity': 0.7,
+            'weight': 2,
+            'color': 'black',
+            'fillColor': '#fff' if property_changes is None else colormap(property_changes)
+        }
+
+    m = folium.Map(location=[46.8566, 2.3522], zoom_start=6)
+
+    folium.GeoJson(
+        data,
+        style_function=style_function,
+        name='geojson'
+    ).add_to(m)
+
+    colormap.add_to(m)
+
+    m.save('./data/clientWeb/map.html')
+
+    print("map.html generated")
+
+    with open('./data/clientWeb/map.html', 'rb') as f:
+        print("map.html send")
+        return FileResponse(f, content_type='text/html')
