@@ -12,6 +12,7 @@ import matplotlib
 from django.http import JsonResponse
 from django.http import FileResponse
 from branca.colormap import linear
+from django.http import HttpResponse
 matplotlib.use('Agg')
 
 
@@ -86,7 +87,6 @@ def repartionTypeBien(request, df, filtre):
 
 def heatmap(request, df, filtre):
 
-    print("heatmap")
     property_changes = df['Code departement'].value_counts().reset_index()
     property_changes.columns = ['Code', 'property_changes']
 
@@ -121,10 +121,4 @@ def heatmap(request, df, filtre):
 
     colormap.add_to(m)
 
-    m.save('./data/clientWeb/map.html')
-
-    print("map.html generated")
-
-    with open('./data/clientWeb/map.html', 'rb') as f:
-        print("map.html send")
-        return FileResponse(f, content_type='text/html')
+    return HttpResponse(m._repr_html_())

@@ -30,15 +30,13 @@ df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_m
 #     if os.path.isfile(os.path.join(directory, filename)):
 #         pages.append(filename.split('.')[0])
 
-# print(pages)
-
 # df = []
 
 # for annee in pages:
 #     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
 
 
-print("Data loaded")
+print("Data loaded ✅")
 
 def index(request):
     return render(request, "index.html")

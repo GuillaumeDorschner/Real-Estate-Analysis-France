@@ -10,18 +10,18 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
     $(document).ready(function () {
-      function loadGraph(loadingId, contentId, containerId, graph) {
+      function loadGraph(loadingId, contentId, containerId, graph, filter) {
         $(loadingId).show();
         $(contentId).hide();
 
         $.ajax({
-          url: '/get_graph/' + "{{annee}}" + '/' + graph + '/regions',
+          url: `/get_graph/{{annee}}/${graph}/${filter}`,
           success: function (data) {
             $(loadingId).hide();
             $(contentId).show();
             if (graph == 'heatMap') {
-              // Assuming 'data.graph' contains the URL of the heatmap
-              $(containerId).html('<iframe src="' + data.graph + '" width="100%" height="600px"></iframe>');
+              console.log(data);
+              $(containerId).html(data);
             }
             else {
               $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
