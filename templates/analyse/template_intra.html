@@ -10,16 +10,22 @@
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
     $(document).ready(function () {
-      function loadGraph(loadingId, contentId, containerId, graph) {
+      function loadGraph(loadingId, contentId, containerId, graph, filter) {
         $(loadingId).show();
         $(contentId).hide();
 
         $.ajax({
-          url: '/get_graph/' + "{{annee}}" + '/' + graph + '/regions',
+          url: `/get_graph/{{annee}}/${graph}/${filter}`,
           success: function (data) {
             $(loadingId).hide();
             $(contentId).show();
-            $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+            if (graph == 'heatMap') {
+              console.log(data);
+              $(containerId).html(data);
+            }
+            else {
+              $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+            }
           },
           error: function () {
             $(loadingId).hide();
@@ -27,11 +33,12 @@
             $(containerId).html('Error occurred while loading the graph');
           }
         });
+
       }
 
       loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien');
       loadGraph('#loading_graph2', '#content_graph2', '#graph_container2', 'repartionTypeBien');
-      loadGraph('#loading_graph3', '#content_graph3', '#graph_container3', 'repartionTypeBien');
+      loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap');
     });
   </script>
 
@@ -100,13 +107,13 @@
 
     autre blaksdlqjflksjdl
 
-    <div id="loading_graph3" class="loading" style="display: none;">
-      <h2>Loading second graph...</h2>
+    <div id="loading_heatmap" class="loading" style="display: none;">
+      <h2>Loading heatmap...</h2>
     </div>
 
-    <div id="content_graph3" class="content" style="display: none;">
-      <div id="graph_container3">
-        <h2>Second graph</h2>
+    <div id="content_heatmap" class="content" style="display: none;">
+      <div id="heatmap_container">
+        <h2>Heatmap</h2>
       </div>
     </div>
 
