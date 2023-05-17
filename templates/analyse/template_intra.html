@@ -24,7 +24,7 @@
               $(containerId).html(data);
             }
             else {
-              $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+              $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
             }
           },
           error: function () {
