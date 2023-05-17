@@ -24,7 +24,7 @@ df ={}
 
 df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
-# -------------all data----------------
+# # -------------all data----------------
 
 
 # # import the csv data
@@ -78,28 +78,25 @@ def analyse_intra(request, annee):
     return HttpResponse(template.render(context, request))
 
 
-def analyse_inter(request):
-#     if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
-#         df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
-#         context = {
-#             "graph": graph_region('regions',df),
-#             "Vente_mois" : Vente_par_Mois(df),
-#             "topPlusMoinsCher" : topPlusMoinsCher(df),
-#         }
-#     else :
-#         context = {"var":"Pas de données pour cette année"}
+def analyse_inter(request, annee, graph, filtre):
 
-#     template = loader.get_template("analyse/template_inter.html")
-#     return HttpResponse(template.render(context, request))
-    return None
+    context = {"var":"Pas de données pour cette année"}
 
-def get_graph(request, annee, graph, filtre):
+    template = loader.get_template("analyse/template_inter.html")
+    return HttpResponse(template.render(context, request))
 
-    dfTemp = df[annee]
+def get_graph(request, type, annee,graph, filtre):
 
-    if graph == "repartionTypeBien":
-        return repartionTypeBien(request, dfTemp, filtre)
-    elif graph == "heatMap":
-        return heatmap(request, dfTemp, filtre)
+
+    if type == "inter":
+        print("inter")
+
     else:
-        raise Http404("Graph does not exist")
+        dfTemp = df[annee]
+
+        if graph == "repartionTypeBien":
+            return repartionTypeBien(request, dfTemp, filtre)
+        elif graph == "heatMap":
+            return heatmap(request, dfTemp, filtre)
+        else:
+            raise Http404("Graph does not exist")

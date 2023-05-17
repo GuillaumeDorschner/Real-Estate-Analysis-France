@@ -47,43 +47,73 @@
   <div class="bg-white pb-6 sm:pb-8 lg:pb-12">
     <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
 
-      <h1 class="mb-4 text-xl font-extrabold leading-none md:text-5xl lg:text-6xl"><mark class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Our</mark> analyse </h1>
+      <h1 class="mb-4 text-xl font-extrabold leading-none md:text-5xl lg:text-6xl"><mark
+          class="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400">Our</mark> analyse </h1>
 
 
       <h2 class="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">inter-annuel</h2>
-      <a href="vs"></a>
 
-      <h2 class="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">intra-annuel</h2>
-  <div class="mx-auto my-10 flex w-screen max-w-max px-4">
-    <div
-      class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-      <div class="p-4">
+      <div class="mx-auto my-10 flex w-screen max-w-max px-4">
+        <div
+          class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+          <div class="p-4">
 
-        {% for page in pages %}
-        <div class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
-          <div
-            class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-            <svg class="svg-icon" viewBox="0 0 20 20">
-							<path d="M11.709,7.438H8.292c-0.234,0-0.427,0.192-0.427,0.427v8.542c0,0.234,0.192,0.427,0.427,0.427h3.417c0.233,0,0.426-0.192,0.426-0.427V7.865C12.135,7.63,11.942,7.438,11.709,7.438 M11.282,15.979H8.719V8.292h2.563V15.979zM6.156,11.709H2.74c-0.235,0-0.427,0.191-0.427,0.426v4.271c0,0.234,0.192,0.427,0.427,0.427h3.417c0.235,0,0.427-0.192,0.427-0.427v-4.271C6.583,11.9,6.391,11.709,6.156,11.709 M5.729,15.979H3.167v-3.416h2.562V15.979zM17.261,3.167h-3.417c-0.235,0-0.427,0.192-0.427,0.427v12.812c0,0.234,0.191,0.427,0.427,0.427h3.417c0.234,0,0.427-0.192,0.427-0.427V3.594C17.688,3.359,17.495,3.167,17.261,3.167 M16.833,15.979h-2.562V4.021h2.562V15.979z"></path>
-						</svg>
-          </div>
-          <div>
-            <a href="{{ page }}" class="font-semibold text-gray-900">
-              {{ page }}
-              <span class="absolute inset-0"></span>
-            </a>
-            <p class="mt-1 text-gray-600">Analyse financière de l'année {{ page }}</p>
+            <div class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
+              <div
+                class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                <svg class="svg-icon" viewBox="0 0 20 20">
+                  <path
+                    d="M11.709,7.438H8.292c-0.234,0-0.427,0.192-0.427,0.427v8.542c0,0.234,0.192,0.427,0.427,0.427h3.417c0.233,0,0.426-0.192,0.426-0.427V7.865C12.135,7.63,11.942,7.438,11.709,7.438 M11.282,15.979H8.719V8.292h2.563V15.979zM6.156,11.709H2.74c-0.235,0-0.427,0.191-0.427,0.426v4.271c0,0.234,0.192,0.427,0.427,0.427h3.417c0.235,0,0.427-0.192,0.427-0.427v-4.271C6.583,11.9,6.391,11.709,6.156,11.709 M5.729,15.979H3.167v-3.416h2.562V15.979zM17.261,3.167h-3.417c-0.235,0-0.427,0.192-0.427,0.427v12.812c0,0.234,0.191,0.427,0.427,0.427h3.417c0.234,0,0.427-0.192,0.427-0.427V3.594C17.688,3.359,17.495,3.167,17.261,3.167 M16.833,15.979h-2.562V4.021h2.562V15.979z">
+                  </path>
+                </svg>
+              </div>
+              <div>
+                <a href="analyse/inter" class="font-semibold text-gray-900">
+                  inter
+                  <span class="absolute inset-0"></span>
+                </a>
+                <p class="mt-1 text-gray-600">Analyse financière de l'année {{ page }}</p>
+              </div>
+            </div>
+
           </div>
         </div>
-        {% endfor %}
+      </div>
 
+
+      <h2 class="mb-2 mt-0 text-4xl font-medium leading-tight text-primary">intra-annuel</h2>
+      <div class="mx-auto my-10 flex w-screen max-w-max px-4">
+        <div
+          class="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
+          <div class="p-4">
+
+            {% for page in pages %}
+            <div class="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50">
+              <div
+                class="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
+                <svg class="svg-icon" viewBox="0 0 20 20">
+                  <path
+                    d="M11.709,7.438H8.292c-0.234,0-0.427,0.192-0.427,0.427v8.542c0,0.234,0.192,0.427,0.427,0.427h3.417c0.233,0,0.426-0.192,0.426-0.427V7.865C12.135,7.63,11.942,7.438,11.709,7.438 M11.282,15.979H8.719V8.292h2.563V15.979zM6.156,11.709H2.74c-0.235,0-0.427,0.191-0.427,0.426v4.271c0,0.234,0.192,0.427,0.427,0.427h3.417c0.235,0,0.427-0.192,0.427-0.427v-4.271C6.583,11.9,6.391,11.709,6.156,11.709 M5.729,15.979H3.167v-3.416h2.562V15.979zM17.261,3.167h-3.417c-0.235,0-0.427,0.192-0.427,0.427v12.812c0,0.234,0.191,0.427,0.427,0.427h3.417c0.234,0,0.427-0.192,0.427-0.427V3.594C17.688,3.359,17.495,3.167,17.261,3.167 M16.833,15.979h-2.562V4.021h2.562V15.979z">
+                  </path>
+                </svg>
+              </div>
+              <div>
+                <a href="{{ page }}" class="font-semibold text-gray-900">
+                  {{ page }}
+                  <span class="absolute inset-0"></span>
+                </a>
+                <p class="mt-1 text-gray-600">Analyse financière de l'année {{ page }}</p>
+              </div>
+            </div>
+            {% endfor %}
+
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-  </div>
 
-</div>
-</div>
+  </div>
+  </div>
 
 
 
