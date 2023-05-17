@@ -1,4 +1,5 @@
 import os
+import sys
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.template import loader
@@ -8,11 +9,9 @@ import pandas as pd
 
 
 
-
-print("Loading data...")
+print("Loading data...\n")
 
 # -------------test data----------------
-
 directory = './data/annee_traitee'
 pages = []
 
@@ -22,26 +21,35 @@ for filename in os.listdir(directory):
 
 df ={} 
 
+pages.sort(reverse=True)
+
 df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
-# -------------all data----------------
 
 
+# # -------------all data----------------
 # # import the csv data
 # directory = './data/annee_traitee'
 # pages = []
+
+# total_files = len([name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))])
 
 # for filename in os.listdir(directory):
 #     if os.path.isfile(os.path.join(directory, filename)):
 #         pages.append(filename.split('.')[0])
 
+# pages.sort(reverse=True)
+
 # df = {}
 
-# for annee in pages:
+# for index, annee in enumerate(pages):
+#     sys.stdout.write("\rFile : {} / {}".format(index+1, total_files))
+#     sys.stdout.flush()
 #     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0,  low_memory=False)
 
+# print("\nData loaded ✅\n")
 
-print("Data loaded ✅")
+
 
 def index(request):
     return render(request, "index.html")
@@ -58,17 +66,6 @@ def analyse(request):
     return HttpResponse(template.render(context, request))
 
 def analyse_intra(request, annee):
-    # if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
-    #     df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
-    #     context = {
-    #         "graph": graph_region('regions',df),
-    #         "Vente_mois" : Vente_par_Mois(df),
-    #         "topPlusMoinsCher" : topPlusMoinsCher(df),
-    #     }
-    # else :
-    #     context = {"var":"Pas de données pour cette année"}
-    # template = loader.get_template("analyse/template_intra.html")
-    # return HttpResponse(template.render(context, request))
 
     context = {
         "annee": annee
@@ -79,27 +76,22 @@ def analyse_intra(request, annee):
 
 
 def analyse_inter(request):
-#     if os.path.isfile('./data/annee_traitee/'+annee+'.csv'):
-#         df = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0)
-#         context = {
-#             "graph": graph_region('regions',df),
-#             "Vente_mois" : Vente_par_Mois(df),
-#             "topPlusMoinsCher" : topPlusMoinsCher(df),
-#         }
-#     else :
-#         context = {"var":"Pas de données pour cette année"}
 
-#     template = loader.get_template("analyse/template_inter.html")
-#     return HttpResponse(template.render(context, request))
-    return None
+    template = loader.get_template("analyse/template_inter.html")
+    return HttpResponse(template.render(context, request))
 
-def get_graph(request, annee, graph, filtre):
+def get_graph(request, type, annee,graph, filtre):
 
-    dfTemp = df[annee]
 
-    if graph == "repartionTypeBien":
-        return repartionTypeBien(request, dfTemp, filtre)
-    elif graph == "heatMap":
-        return heatmap(request, dfTemp, filtre)
+    if type == "inter":
+        print("inter")
+
     else:
-        raise Http404("Graph does not exist")
+        dfTemp = df[annee]
+
+        if graph == "repartionTypeBien":
+            return repartionTypeBien(request, dfTemp, filtre)
+        elif graph == "heatMap":
+            return heatmap(request, dfTemp, filtre)
+        else:
+            raise Http404("Graph does not exist")

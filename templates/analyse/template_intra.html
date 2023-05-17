@@ -15,7 +15,7 @@
         $(contentId).hide();
 
         $.ajax({
-          url: `/get_graph/{{annee}}/${graph}/${filter}`,
+          url: `/get_graph/intra/{{annee}}/${graph}/${filter}`,
           success: function (data) {
             $(loadingId).hide();
             $(contentId).show();
@@ -24,7 +24,7 @@
               $(containerId).html(data);
             }
             else {
-              $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+              $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
             }
           },
           error: function () {
@@ -37,7 +37,6 @@
       }
 
       loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien');
-      loadGraph('#loading_graph2', '#content_graph2', '#graph_container2', 'repartionTypeBien');
       loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap');
     });
   </script>
@@ -94,18 +93,6 @@
     </div>
 
     On peu voire les graph suivant ...
-
-    <div id="loading_graph2" class="loading" style="display: none;">
-      <h2>Loading second graph...</h2>
-    </div>
-
-    <div id="content_graph2" class="content" style="display: none;">
-      <div id="graph_container2">
-        <h2>Second graph</h2>
-      </div>
-    </div>
-
-    autre blaksdlqjflksjdl
 
     <div id="loading_heatmap" class="loading" style="display: none;">
       <h2>Loading heatmap...</h2>
