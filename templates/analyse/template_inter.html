@@ -15,7 +15,7 @@
         $(contentId).hide();
 
         $.ajax({
-          url: `/get_graph/{{annee}}/${graph}/${filter}`,
+          url: `/get_graph/inter/{{annee}}/${graph}/${filter}`,
           success: function (data) {
             $(loadingId).hide();
             $(contentId).show();
@@ -24,7 +24,7 @@
               $(containerId).html(data);
             }
             else {
-              $(containerId).html('<img src="data:image/png;base64,' + data.graph + '">');
+              $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
             }
           },
           error: function () {
