@@ -8,38 +8,56 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <title>Analyse 🔍</title>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      function loadGraph(loadingId, contentId, containerId, graph, filter) {
-        $(loadingId).show();
-        $(contentId).hide();
+<script>
+  $(document).ready(function () {
 
-        $.ajax({
-          url: `/get_graph/intra/{{annee}}/${graph}/${filter}`,
-          success: function (data) {
-            $(loadingId).hide();
-            $(contentId).show();
-            if (graph == 'heatMap') {
-              console.log(data);
-              $(containerId).html(data);
-            }
-            else {
-              $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
-            }
-          },
-          error: function () {
-            $(loadingId).hide();
-            $(contentId).show();
-            $(containerId).html('Error occurred while loading the graph');
-          }
-        });
+    var filters = {};
 
-      }
+    $('#submitFilters').click(function() {
+      filters = $('#filtersForm').serializeArray().reduce(function(obj, item) {
+        obj[item.name] = item.value;
+        print(obj);
+        return obj;
+      }, {});
 
-      loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien');
-      loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap');
+      loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien', filters);
+      loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap', filters);
     });
-  </script>
+
+    function loadGraph(loadingId, contentId, containerId, graph, filters) {
+      $(loadingId).show();
+      $(contentId).hide();
+
+      $.ajax({
+        type: 'POST',
+        url: `/get_graph/intra/{{annee}}/${graph}/`,
+        data: JSON.stringify(filters),
+        contentType: "application/json",
+        dataType: "json",
+        success: function (data) {
+          $(loadingId).hide();
+          $(contentId).show();
+          if (graph == 'heatMap') {
+            console.log(data);
+            $(containerId).html(data);
+          }
+          else {
+            $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
+          }
+        },
+        error: function () {
+          $(loadingId).hide();
+          $(contentId).show();
+          $(containerId).html('Error occurred while loading the graph');
+        }
+      });
+    }
+
+    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien', filters);
+    loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap', filters);
+  });
+</script>
+
 
 </head>
 
@@ -103,6 +121,24 @@
         <h2>Heatmap</h2>
       </div>
     </div>
+
+
+
+  </br>
+  </br>
+  </br>
+
+
+
+    <form id="filtersForm">
+      <label for="typeLocal">Type local:</label><br>
+      <input type="text" id="typeLocal" name="Type local"><br>
+      <label for="codePostal">Code postal:</label><br>
+      <input type="text" id="codePostal" name="Code postal"><br>
+      <label for="dateMutation">Date mutation:</label><br>
+      <input type="date" id="dateMutation" name="Date mutation"><br>
+      <input type="button" value="Submit" id="submitFilters">
+    </form>
 
 
 
