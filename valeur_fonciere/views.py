@@ -2,11 +2,11 @@ import os
 import sys
 import pandas as pd
 from django.http import Http404
-from django.template import loader
 from django.shortcuts import render
+from django.template import loader
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from analyse.graph import *
+from .analyse.graph import *
 
 
 
@@ -16,13 +16,15 @@ print("Loading data...\n")
 directory = './data/annee_traitee'
 pages = []
 
-#for filename in os.listdir(directory):
-#    if os.path.isfile(os.path.join(directory, filename)):
-#        pages.append(filename.split('.')[0])
+for filename in os.listdir(directory):
+    if os.path.isfile(os.path.join(directory, filename)):
+        pages.append(filename.split('.')[0])
 
 df ={} 
 
 pages.sort(reverse=True)
+
+df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
 
 
@@ -66,11 +68,10 @@ def analyse(request):
 
 def analyse_intra(request, annee):
 
-    df = pd.read_csv(f'../data/annee_traitee/{annee}.csv',sep=',',header=0, low_memory=False)
     context = {
-        "annee": annee,
+        "annee": annee
     }
-    
+
     template = loader.get_template("analyse/template_intra.html")
     return HttpResponse(template.render(context, request))
 
