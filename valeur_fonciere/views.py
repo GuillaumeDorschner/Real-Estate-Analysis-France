@@ -1,11 +1,12 @@
 import os
 import sys
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import loader
-from django.http import Http404
-from .analyse.graph import *
 import pandas as pd
+from django.http import Http404
+from django.shortcuts import render
+from django.template import loader
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from .analyse.graph import *
 
 
 
@@ -80,15 +81,19 @@ def analyse_inter(request):
     template = loader.get_template("analyse/template_inter.html")
     return HttpResponse(template.render())
 
-def get_graph(request, type, annee, graph, filtre):
-
+@csrf_exempt
+def get_graph(request, type, annee, graph):
+    filters = {}
+    if request.method == 'POST':
+        filters = json.loads(request.body)
 
     if type == "inter":
         print("inter")
-        filtre(dfTemp, filtre)
+        dfTemp = filter_df(dfTemp, filters)
 
     else:
         dfTemp = df[annee]
+        dfTemp = filter_df(dfTemp, filters)
 
         if graph == "vente_par_mois":
             return vente_par_mois(request, dfTemp)
@@ -106,10 +111,9 @@ def get_graph(request, type, annee, graph, filtre):
             raise Http404("Graph does not exist")
 
 def filter_df(df, filters):
-    filters = json.loads(filters)
     for key, value in filters.items():
         if key in df.columns:
             df = df[df[key] == value]
         else:
-            return Http404("Filtre does not exist")
+            return Http404("Filter does not exist")
     return df

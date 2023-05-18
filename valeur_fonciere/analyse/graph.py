@@ -20,9 +20,11 @@ from django.http import HttpResponse
 matplotlib.use('Agg')
 import plotly.express as px
 
-def Vente_Par_Mois(request, df):
-    """Nombre de ventes par mois
-    statique"""
+def vente_par_mois(request, df):
+    """
+    Nombre de ventes par mois
+    statique
+    """
     df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
     plt.title('Nombre de ventes répartis par mois')
     plt.plot(df["Date mutation"].value_counts()[df['Date mutation'].unique()])
@@ -75,7 +77,7 @@ def top_5_moins_cher(request, df):
 
     return HttpResponse(html_fig)
 
-def Vol_monetaire(df):
+def vol_monetaire(df):
     """Volume monétaire par département
     graph fixe"""
     DEPARTMENTS = json.load(open("../data/departements/departements_dict.json")) 
