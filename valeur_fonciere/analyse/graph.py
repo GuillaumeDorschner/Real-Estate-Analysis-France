@@ -96,7 +96,7 @@ def vol_monetaire(df):
     image_html = fig.to_html()
     return JsonResponse({"Vol_monetaire": image_html})
 
-def prix_m2(df):
+def prix_m2(m2):
     """Calcul du prix moyen au m2 par département
     graph non interactif"""
     m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
