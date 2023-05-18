@@ -90,9 +90,9 @@ def get_graph(request, type, annee, graph, filtre):
     else:
         dfTemp = df[annee]
 
-        filtre(dfTemp, filtre)
-
-        if graph == "repartionTypeBien":
+        if graph == "Vente_par_Mois":
+            return Vente_par_Mois(request, dfTemp)
+        elif graph == "repartionTypeBien":
             return repartionTypeBien(request, dfTemp)
         elif graph == "heatMap":
             return heatMap(request, dfTemp)

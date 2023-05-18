@@ -29,12 +29,17 @@ def Vente_Par_Mois(request, df):
     plt.xlabel('Mois')
     plt.ylabel('Nombre de ventes')
 
-    imgdata = StringIO()
+    imgdata = io.BytesIO()  # use BytesIO instead of StringIO
     plt.savefig(imgdata, format='svg')
+    imgdata.seek(0)  # rewind the data
 
-    return imgdata.getvalue()
+    svg_data = imgdata.getvalue().decode()
 
-def repartion_Type_Bien(request, df):
+    imgdata.close()  # close the BytesIO object
+
+    return JsonResponse({"graph": svg_data})
+
+def repartionTypeBien(request, df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
@@ -48,37 +53,48 @@ def repartion_Type_Bien(request, df):
 
     return JsonResponse({"graph": image_base64})
 
-def data_Departement(departement,data):
-    """données par département
-    statique"""
-    depart = data[(data["Code departement"] == departement) & (data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
-    depart["Prix mètre carré"] = depart["Valeur fonciere"]/depart["Surface reelle bati"]
-    retour = BytesIO
-    pd.table.plotting.table(depart)
-    plt.savefig(retour, format='png')
-    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-    return JsonResponse({"graph": image_base64})
+# def data_departement(departement,data):
+#     depart = data[(data["Code departement"] == departement) & (data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+#     depart["Prix mètre carré"] = depart["Valeur fonciere"]/depart["Surface reelle bati"]
+#     retour = BytesIO
+#     pd.table.plotting.table(depart)
+#     plt.savefig(retour, format='png')
+#     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
+#     return JsonResponse({"graph": image_base64})
 
 def top_5_Cher(df):
     """top 5 des départements les plus chers"""
     prix_m2_departement = prix_m2(df)
     top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
-    retour = BytesIO
-    top5_chers.style.background_gradient(cmap='Reds')
-    pd.table.plotting.table(top5_chers)
+    retour = io.BytesIO()  # instantiate BytesIO object
+
+    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
+    ax.axis('off')
+    pd.plotting.table(ax, top5_chers)  # plot the table
+
     plt.savefig(retour, format='png')
+    plt.close(fig)  # close the figure
+
     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-    return JsonResponse({"top5cher": image_base64})
-def top5moinscher(df):
+    retour.close()  # close the BytesIO object
+    return JsonResponse({"graph": image_base64})
+
+def top5moinscher(request, df):
     """top 5 des départements les moins chers"""
     prix_m2_departement = prix_m2(df)
     top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
-    retour = BytesIO
-    top5_moins_chers.style.background_gradient(cmap='Greens')
-    pd.table.plotting.table(top5_moins_chers)
+    retour = io.BytesIO()  # instantiate BytesIO object
+
+    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
+    ax.axis('off')
+    pd.plotting.table(ax, top5_moins_chers)  # plot the table
+
     plt.savefig(retour, format='png')
+    plt.close(fig)  # close the figure
+
     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-    return JsonResponse({"top5moinscher": image_base64})
+    retour.close()  # close the BytesIO object
+    return JsonResponse({"graph": image_base64})
 
 def Vol_monetaire(df):
     """Volume monétaire par département
@@ -101,10 +117,10 @@ def Vol_monetaire(df):
 
 def prix_m2(df):
     """Calcul du prix moyen au m2 par département
-    table"""
-    df["Month mutation"] = df["Date mutation"].dt.month
-    prix_metre_carre = df[(df["Type local"] != "Dépendance")].reset_index(drop = True)
-    prix_metre_carre = prix_metre_carre.dropna(subset=['Type local'])
+    graph non interactif"""
+    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
+    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
+    return prix_m2_departement
 
     prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
     return prix_metre_carre
