@@ -147,7 +147,7 @@ def heat_map(request, df):
 def nb_ventes(request, df):
     """Nombre de ventes par département
     graph fixe"""
-    dict_nb_ventes = pd.DataFrame(data["Code departement"].value_counts()).reset_index()
+    dict_nb_ventes = pd.DataFrame(df["Code departement"].value_counts()).reset_index()
     dict_nb_ventes.columns = ["Code departement", "Nombre de ventes"]
     for i in dict_nb_ventes["Code departement"]:
         dict_nb_ventes.loc[dict_nb_ventes["Code departement"] == i, "Département"] = DEPARTMENTS.get(str(i))
