@@ -9,37 +9,40 @@
   <title>Analyse 🔍</title>
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script>
-    $(document).ready(function () {
-      function loadGraph(loadingId, contentId, containerId, graph, filter) {
-        $(loadingId).show();
-        $(contentId).hide();
+    var filters = {}
 
-        $.ajax({
-          url: `/get_graph/intra/{{annee}}/${graph}/${filter}`,
-          success: function (data) {
-            $(loadingId).hide();
-            $(contentId).show();
-            if (graph == 'heatMap') {
-              console.log(data);
-              $(containerId).html(data);
-            }
-            else {
-              $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
-            }
-          },
-          error: function () {
-            $(loadingId).hide();
-            $(contentId).show();
-            $(containerId).html('Error occurred while loading the graph');
-          }
-        });
+  $(document).ready(function () {
+    function loadGraph(loadingId, contentId, containerId, graph, filters) {
+      $(loadingId).show();
+      $(contentId).hide();
 
-      }
+      $.ajax({
+        type: 'POST',
+        url: `/get_graph/intra/{{annee}}/${graph}/`,
+        contentType: 'html',
+        data: JSON.stringify(filters),
+        success: function (data) {
+          $(loadingId).hide();
+          $(contentId).show();
+            $(containerId).html(data);
+        },
+        error: function (e) {
+          $(loadingId).hide();
+          $(contentId).show();
+          $(containerId).html('Error occurred while loading the graph');
+          console.log(e);
+        }
+      });
+    }
 
-      loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien');
-      loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap');
-    });
-  </script>
+    loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'vente_par_mois', filters);
+    loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
+    loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
+    loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
+    loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+  });
+</script>
+
 
 </head>
 
@@ -79,23 +82,55 @@
 
 
 
-
-    <h1>Welcome to my site!</h1>
-
-    <div id="loading_graph1" class="loading" style="display: none;">
-      <h2>Loading first graph...</h2>
+    vente_par_mois
+    <div id="loading_vente_par_mois" class="loading" style="display: none;">
+      <h2>Loading...</h2>
     </div>
 
-    <div id="content_graph1" class="content" style="display: none;">
-      <div id="graph_container1">
-        <h2>First graph</h2>
+    <div id="content_vente_par_mois" class="content" style="display: none;">
+      <div id="graph_vente_par_mois">
+        <h2>vente_par_mois</h2>
       </div>
     </div>
 
-    On peu voire les graph suivant ...
+
+    repartion_type_bien
+    <div id="loading_repartion_type_bien" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_repartion_type_bien" class="content" style="display: none;">
+      <div id="graph_repartion_type_bien">
+        <h2>repartion_type_bien</h2>
+      </div>
+    </div>
+
+    top_5_cher
+    <div id="loading_top_5_cher" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_top_5_cher" class="content" style="display: none;">
+      <div id="graph_top_5_cher">
+        <h2>top_5_cher</h2>
+      </div>
+    </div>
+
+    top_5_moins_cher
+    <div id="loading_top_5_moins_cher" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_top_5_moins_cher" class="content" style="display: none;">
+      <div id="graph_top_5_moins_cher">
+        <h2>top_5_moins_cher</h2>
+      </div>
+    </div>
+
+    heatMap
 
     <div id="loading_heatmap" class="loading" style="display: none;">
-      <h2>Loading heatmap...</h2>
+      <h2>Loading...</h2>
     </div>
 
     <div id="content_heatmap" class="content" style="display: none;">

@@ -1,11 +1,12 @@
 import os
 import sys
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import loader
-from django.http import Http404
-from .analyse.graph import *
 import pandas as pd
+from django.http import Http404
+from django.shortcuts import render
+from django.template import loader
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from .analyse.graph import *
 
 
 
@@ -78,20 +79,41 @@ def analyse_intra(request, annee):
 def analyse_inter(request):
 
     template = loader.get_template("analyse/template_inter.html")
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render())
 
-def get_graph(request, type, annee,graph, filtre):
-
+@csrf_exempt
+def get_graph(request, type, annee, graph):
+    filters = {}
+    if request.method == 'POST':
+        filters = json.loads(request.body)
 
     if type == "inter":
         print("inter")
+        dfTemp = filter_df(dfTemp, filters)
 
     else:
         dfTemp = df[annee]
+        dfTemp = filter_df(dfTemp, filters)
 
-        if graph == "repartionTypeBien":
-            return repartionTypeBien(request, dfTemp, filtre)
-        elif graph == "heatMap":
-            return heatmap(request, dfTemp, filtre)
+        if graph == "vente_par_mois":
+            return vente_par_mois(request, dfTemp)
+        elif graph == "repartion_type_bien":
+            return repartion_type_bien(request, dfTemp)
+        elif graph == "top_5_cher":
+            return top_5_cher(request, dfTemp)
+        elif graph == "top_5_moins_cher":
+            return top_5_moins_cher(request, dfTemp)
+        elif graph == "prix_m2":
+            return prix_m2(request, dfTemp)
+        elif graph == "heat_map":
+            return heat_map(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
+
+def filter_df(df, filters):
+    for key, value in filters.items():
+        if key in df.columns:
+            df = df[df[key] == value]
+        else:
+            return Http404("Filter does not exist")
+    return df
