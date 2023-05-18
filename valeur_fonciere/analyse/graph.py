@@ -31,13 +31,13 @@ def vente_par_mois(request, df):
     plt.xticks(rotation=45)
     plt.xlabel('Mois')
     plt.ylabel('Nombre de ventes')
-
     html_fig = mpld3.fig_to_html(plt.gcf())
     plt.close()
 
     return HttpResponse(html_fig)
 
 def repartion_type_bien(request, df):
+    plt.cla()
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
@@ -99,8 +99,8 @@ def vol_monetaire(df):
 def prix_m2(m2):
     """Calcul du prix moyen au m2 par département
     graph non interactif"""
-    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
-    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
+    df['Valeur fonciere par m2'] = df['Valeur fonciere'] / df['Surface terrain']
+    prix_m2_departement = df.groupby('Code departement')['Valeur fonciere par m2'].mean()
     return prix_m2_departement
 
     prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
@@ -184,3 +184,4 @@ def nb_ventes(request, df):
 
     fig_html = fig.to_html()
     return JsonResponse({"nb_ventes": fig_html})
+

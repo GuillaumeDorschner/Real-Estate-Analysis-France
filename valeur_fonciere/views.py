@@ -5,8 +5,10 @@ from django.http import Http404
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from .analyse.graph import *
+from django.template import loader
+from django.http import Http404
+from analyse.graph import *
+import pandas as pd
 
 
 
@@ -16,15 +18,16 @@ print("Loading data...\n")
 directory = './data/annee_traitee'
 pages = []
 
-for filename in os.listdir(directory):
-    if os.path.isfile(os.path.join(directory, filename)):
-        pages.append(filename.split('.')[0])
+#for filename in os.listdir(directory):
+#    if os.path.isfile(os.path.join(directory, filename)):
+#        pages.append(filename.split('.')[0])
 
 df ={} 
 
 pages.sort(reverse=True)
 
-df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
+
+
 
 
 
@@ -68,10 +71,12 @@ def analyse(request):
 
 def analyse_intra(request, annee):
 
+    df = pd.read_csv(f'../data/annee_traitee/{annee}.csv',sep=',',header=0, low_memory=False)
     context = {
-        "annee": annee
+        "annee": annee,
+        "graph": Vente_Par_Mois(request, df),
     }
-
+    
     template = loader.get_template("analyse/template_intra.html")
     return HttpResponse(template.render(context, request))
 
@@ -96,7 +101,7 @@ def get_graph(request, type, annee, graph):
         dfTemp = filter_df(dfTemp, filters)
 
         if graph == "vente_par_mois":
-            return vente_par_mois(request, dfTemp)
+            return Vente_Par_Mois(request, dfTemp)
         elif graph == "repartion_type_bien":
             return repartion_type_bien(request, dfTemp)
         elif graph == "top_5_cher":
@@ -117,3 +122,5 @@ def filter_df(df, filters):
         else:
             return Http404("Filter does not exist")
     return df
+
+analyse_intra(None,"2019")
