@@ -41,6 +41,36 @@
     });
   </script>
 
+    function loadGraph(loadingId, contentId, containerId, graph, filters) {
+      $(loadingId).show();
+      $(contentId).hide();
+
+      $.ajax({
+        type: 'POST',
+        url: `/get_graph/intra/{{annee}}/${graph}/`,
+        data: JSON.stringify(filters),
+        contentType: "application/json",
+        success: function (data) {
+          $(loadingId).hide();
+          $(contentId).show();
+            $(containerId).html(data);
+        },
+        error: function (e) {
+          $(loadingId).hide();
+          $(contentId).show();
+          $(containerId).html('Error occurred while loading the graph');
+          console.log(e);
+        }
+      });
+    }
+
+    // loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'rpartionTypeBien', filters);
+    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'vente_par_mois', filters);
+    loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+  });
+</script>
+
+
 </head>
 
 <body>
