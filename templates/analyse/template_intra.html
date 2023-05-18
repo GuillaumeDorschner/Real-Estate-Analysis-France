@@ -37,7 +37,6 @@
           $(loadingId).hide();
           $(contentId).show();
           if (graph == 'heatMap') {
-            console.log(data);
             $(containerId).html(data);
           }
           else {
@@ -54,7 +53,7 @@
     }
 
     // loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'rpartionTypeBien', filters);
-    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'data_departement', filters);
+    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'top5cher', filters);
     loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap', filters);
   });
 </script>

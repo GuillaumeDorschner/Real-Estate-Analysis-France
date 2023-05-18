@@ -93,7 +93,7 @@ def get_graph(request, type, annee, graph):
         dfTemp = filter_df(dfTemp, filters)
 
         if graph == "Vente_par_Mois":
-            return VenteParMois(request, dfTemp)
+            return Vente_par_Mois(request, dfTemp)
         elif graph == "repartionTypeBien":
             return repartionTypeBien(request, dfTemp)
         elif graph == "data_departement":
