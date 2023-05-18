@@ -181,7 +181,7 @@ def nb_ventes(request, df):
     fig.update_xaxes(range=[50000, 110000], row=1, col=1)
 
     fig.update_xaxes(range=[1000, 4000], row=1, col=2)
-
+    
     fig_html = fig.to_html()
     return JsonResponse({"nb_ventes": fig_html})
 
