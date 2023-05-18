@@ -16,7 +16,7 @@
     $('#submitFilters').click(function() {
       filters = $('#filtersForm').serializeArray().reduce(function(obj, item) {
         obj[item.name] = item.value;
-        print(obj);
+        console.log(obj);
         return obj;
       }, {});
 
@@ -33,7 +33,6 @@
         url: `/get_graph/intra/{{annee}}/${graph}/`,
         data: JSON.stringify(filters),
         contentType: "application/json",
-        dataType: "json",
         success: function (data) {
           $(loadingId).hide();
           $(contentId).show();
@@ -45,15 +44,17 @@
             $(containerId).html('<img class="mx-auto" src="data:image/png;base64,' + data.graph + '">');
           }
         },
-        error: function () {
+        error: function (e) {
           $(loadingId).hide();
           $(contentId).show();
           $(containerId).html('Error occurred while loading the graph');
+          console.log(e);
         }
       });
     }
 
-    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'repartionTypeBien', filters);
+    // loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'rpartionTypeBien', filters);
+    loadGraph('#loading_graph1', '#content_graph1', '#graph_container1', 'data_departement', filters);
     loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heatMap', filters);
   });
 </script>
@@ -96,9 +97,10 @@
     <!-- template-->
 
 
+    <h1>{{annee}}</h1>
 
 
-    <h1>Welcome to my site!</h1>
+    repartionTypeBien
 
     <div id="loading_graph1" class="loading" style="display: none;">
       <h2>Loading first graph...</h2>
@@ -110,7 +112,7 @@
       </div>
     </div>
 
-    On peu voire les graph suivant ...
+    heatMap
 
     <div id="loading_heatmap" class="loading" style="display: none;">
       <h2>Loading heatmap...</h2>
@@ -124,24 +126,6 @@
 
 
 
-  </br>
-  </br>
-  </br>
-
-
-
-    <form id="filtersForm">
-      <label for="typeLocal">Type local:</label><br>
-      <input type="text" id="typeLocal" name="Type local"><br>
-      <label for="codePostal">Code postal:</label><br>
-      <input type="text" id="codePostal" name="Code postal"><br>
-      <label for="dateMutation">Date mutation:</label><br>
-      <input type="date" id="dateMutation" name="Date mutation"><br>
-      <input type="button" value="Submit" id="submitFilters">
-    </form>
-
-
-
     <!-- <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
     <h2>graph de france sur ...</h2>
     {{graph|safe}}
@@ -151,6 +135,7 @@
   </div> -->
 
     <!-- template-->
+
   </div>
 
   <div class="bg-gray-900">
@@ -189,4 +174,4 @@
 
 </body>
 
-</html>
+</html>e

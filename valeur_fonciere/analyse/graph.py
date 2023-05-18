@@ -62,6 +62,7 @@ def top5cher(df):
     plt.savefig(retour, format='png')
     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
     return JsonResponse({"graph": image_base64})
+
 def top5moinscher(df):
     """top 5 des départements les moins chers"""
     prix_m2_departement = prix_m2(df)

@@ -66,7 +66,6 @@ def analyse(request):
     return HttpResponse(template.render(context, request))
 
 def analyse_intra(request, annee):
-
     context = {
         "annee": annee
     }
@@ -76,7 +75,6 @@ def analyse_intra(request, annee):
 
 
 def analyse_inter(request):
-
     template = loader.get_template("analyse/template_inter.html")
     return HttpResponse(template.render())
 
@@ -94,12 +92,20 @@ def get_graph(request, type, annee, graph):
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
 
-        if graph == "repartionTypeBien":
+        if graph == "Vente_par_Mois":
+            return VenteParMois(request, dfTemp)
+        elif graph == "repartionTypeBien":
             return repartionTypeBien(request, dfTemp)
+        elif graph == "data_departement":
+            return data_departement(request, dfTemp)
+        elif graph == "top5cher":
+            return top5cher(request, dfTemp)
+        elif graph == "top5moinscher":
+            return heatMap(request, dfTemp)
+        elif graph == "prix_m2":
+            return prix_m2(request, dfTemp)
         elif graph == "heatMap":
             return heatMap(request, dfTemp)
-        elif graph == "Vente_par_Mois":
-            return VenteParMois(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 
