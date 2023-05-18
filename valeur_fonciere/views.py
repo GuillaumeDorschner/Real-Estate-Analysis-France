@@ -2,13 +2,11 @@ import os
 import sys
 import pandas as pd
 from django.http import Http404
+from django.template import loader
 from django.shortcuts import render
-from django.template import loader
 from django.http import HttpResponse
-from django.template import loader
-from django.http import Http404
+from django.views.decorators.csrf import csrf_exempt
 from analyse.graph import *
-import pandas as pd
 
 
 
@@ -25,9 +23,6 @@ pages = []
 df ={} 
 
 pages.sort(reverse=True)
-
-
-
 
 
 
@@ -101,7 +96,7 @@ def get_graph(request, type, annee, graph):
         dfTemp = filter_df(dfTemp, filters)
 
         if graph == "vente_par_mois":
-            return Vente_Par_Mois(request, dfTemp)
+            return vente_par_mois(request, dfTemp)
         elif graph == "repartion_type_bien":
             return repartion_type_bien(request, dfTemp)
         elif graph == "top_5_cher":
@@ -122,5 +117,3 @@ def filter_df(df, filters):
         else:
             return Http404("Filter does not exist")
     return df
-
-analyse_intra(None,"2019")
