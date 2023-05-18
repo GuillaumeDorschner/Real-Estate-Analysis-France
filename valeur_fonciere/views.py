@@ -80,7 +80,7 @@ def analyse_inter(request):
     template = loader.get_template("analyse/template_inter.html")
     return HttpResponse(template.render())
 
-def get_graph(request, type, annee,graph, filtre):
+def get_graph(request, type, annee, graph, filtre):
 
 
     if type == "inter":
@@ -89,9 +89,14 @@ def get_graph(request, type, annee,graph, filtre):
     else:
         dfTemp = df[annee]
 
+        iflzksdjflkdfjlskdjfkl
+        sdflsjdfksj
+
         if graph == "repartionTypeBien":
-            return repartionTypeBien(request, dfTemp, filtre)
+            return repartionTypeBien(request, dfTemp)
         elif graph == "heatMap":
-            return heatmap(request, dfTemp, filtre)
+            return heatmap(request, dfTemp)
+        elif graph == "Vente_par_Mois":
+            return Vente_par_Mois(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
