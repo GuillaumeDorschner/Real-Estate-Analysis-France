@@ -3,6 +3,7 @@ import json
 import random
 import matplotlib.pyplot as plt
 import base64
+import mpld3
 import matplotlib.colors as mcolors
 from io import StringIO
 import pandas as pd
@@ -16,7 +17,7 @@ from django.http import HttpResponse
 matplotlib.use('Agg')
 
 def vente_par_mois(request, df):
-    df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
+    df["Date mutation"] = pd.to_datetime(df['Date mutation'], dayfirst=True).dt.strftime('%d-%m')
 
     plt.title('Nombre de ventes répartis par mois')
     plt.plot(df["Date mutation"].value_counts()[df['Date mutation'].unique()])
@@ -24,15 +25,10 @@ def vente_par_mois(request, df):
     plt.xlabel('Mois')
     plt.ylabel('Nombre de ventes')
 
-    imgdata = io.BytesIO()  # use BytesIO instead of StringIO
-    plt.savefig(imgdata, format='svg')
-    imgdata.seek(0)  # rewind the data
+    html_fig = mpld3.fig_to_html(plt.gcf())
+    plt.close()
 
-    svg_data = imgdata.getvalue().decode()
-
-    imgdata.close()  # close the BytesIO object
-
-    return JsonResponse({"graph": svg_data})
+    return HttpResponse(html_fig)
 
 def repartion_type_bien(request, df):
     type_counts = df['Type local'].value_counts()
@@ -41,55 +37,38 @@ def repartion_type_bien(request, df):
     ax.set_ylabel('')
     ax.set_title('Répartition des types de biens')
 
-    buf = BytesIO()
-    plt.savefig(buf, format='png')
+    html_fig = mpld3.fig_to_html(fig)
+    plt.close(fig)
 
-    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
-
-    return JsonResponse({"graph": image_base64})
-
-# def data_departement(departement,data):
-#     depart = data[(data["Code departement"] == departement) & (data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
-#     depart["Prix mètre carré"] = depart["Valeur fonciere"]/depart["Surface reelle bati"]
-#     retour = BytesIO
-#     pd.table.plotting.table(depart)
-#     plt.savefig(retour, format='png')
-#     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-#     return JsonResponse({"graph": image_base64})
+    return HttpResponse(html_fig)
 
 def top_5_cher(request, df):
     """top 5 des départements les plus chers"""
     prix_m2_departement = prix_m2(df)
     top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
-    retour = io.BytesIO()  # instantiate BytesIO object
 
     fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
     ax.axis('off')
     pd.plotting.table(ax, top5_chers)  # plot the table
 
-    plt.savefig(retour, format='png')
+    html_fig = mpld3.fig_to_html(fig)
     plt.close(fig)  # close the figure
 
-    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-    retour.close()  # close the BytesIO object
-    return JsonResponse({"graph": image_base64})
+    return HttpResponse(html_fig)
 
 def top_5_moins_cher(request, df):
     """top 5 des départements les moins chers"""
     prix_m2_departement = prix_m2(df)
     top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
-    retour = io.BytesIO()  # instantiate BytesIO object
 
     fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
     ax.axis('off')
     pd.plotting.table(ax, top5_moins_chers)  # plot the table
 
-    plt.savefig(retour, format='png')
+    html_fig = mpld3.fig_to_html(fig)
     plt.close(fig)  # close the figure
 
-    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
-    retour.close()  # close the BytesIO object
-    return JsonResponse({"graph": image_base64})
+    return HttpResponse(html_fig)
 
 def prix_m2(m2):
     """Calcul du prix moyen au m2 par département
