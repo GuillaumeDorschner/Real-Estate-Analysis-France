@@ -44,6 +44,43 @@ def repartionTypeBien(request, df):
 
     return JsonResponse({"graph": image_base64})
 
+def data_departement(departement,data):
+    depart = data[(data["Code departement"] == departement) & (data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    depart["Prix mètre carré"] = depart["Valeur fonciere"]/depart["Surface reelle bati"]
+    retour = BytesIO
+    pd.table.plotting.table(depart)
+    plt.savefig(retour, format='png')
+    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
+    return JsonResponse({"graph": image_base64})
+
+def top5cher(df):
+    """top 5 des départements les plus chers"""
+    prix_m2_departement = prix_m2(df)
+    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
+    retour = BytesIO
+    pd.table.plotting.table(top5_chers)
+    plt.savefig(retour, format='png')
+    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
+    return JsonResponse({"graph": image_base64})
+def top5moinscher(df):
+    """top 5 des départements les moins chers"""
+    prix_m2_departement = prix_m2(df)
+    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
+    retour = BytesIO
+    pd.table.plotting.table(top5_moins_chers)
+    plt.savefig(retour, format='png')
+    image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
+    return JsonResponse({"graph": image_base64})
+
+def prix_m2(m2):
+    """Calcul du prix moyen au m2 par département
+    graph non interactif"""
+    m2
+    print(m2['Code departement'].nunique())
+    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
+    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
+    return prix_m2_departement
+
 
 def heatmap(request, df):
 
@@ -52,7 +89,7 @@ def heatmap(request, df):
 
     property_dict = property_changes.set_index('Code')['property_changes'].to_dict()
 
-    with open('./data/departements.geojson') as f:
+    with open('./data/departements/departements.geojson') as f:
         data = json.load(f)
 
     colormap = linear.YlOrRd_09.scale(
@@ -82,3 +119,4 @@ def heatmap(request, df):
     colormap.add_to(m)
 
     return HttpResponse(m._repr_html_())
+
