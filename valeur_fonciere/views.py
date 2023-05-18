@@ -85,18 +85,27 @@ def get_graph(request, type, annee, graph, filtre):
 
     if type == "inter":
         print("inter")
+        filtre(dfTemp, filtre)
 
     else:
         dfTemp = df[annee]
 
-        iflzksdjflkdfjlskdjfkl
-        sdflsjdfksj
+        filtre(dfTemp, filtre)
 
         if graph == "repartionTypeBien":
             return repartionTypeBien(request, dfTemp)
         elif graph == "heatMap":
-            return heatmap(request, dfTemp)
+            return heatMap(request, dfTemp)
         elif graph == "Vente_par_Mois":
-            return Vente_par_Mois(request, dfTemp)
+            return VenteParMois(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
+
+def filter_df(df, filters):
+    filters = json.loads(filters)
+    for key, value in filters.items():
+        if key in df.columns:
+            df = df[df[key] == value]
+        else:
+            return Http404("Filtre does not exist")
+    return df

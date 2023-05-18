@@ -15,7 +15,7 @@ from branca.colormap import linear
 from django.http import HttpResponse
 matplotlib.use('Agg')
 
-def Vente_par_Mois(request, df):
+def VenteParMois(request, df):
 
     df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
 
@@ -82,7 +82,7 @@ def prix_m2(m2):
     return prix_m2_departement
 
 
-def heatmap(request, df):
+def heatMap(request, df):
 
     property_changes = df['Code departement'].value_counts().reset_index()
     property_changes.columns = ['Code', 'property_changes']
