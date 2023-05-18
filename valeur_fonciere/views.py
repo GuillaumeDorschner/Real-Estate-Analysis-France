@@ -66,12 +66,19 @@ def analyse(request):
     return HttpResponse(template.render(context, request))
 
 def analyse_intra(request, annee):
+
+    context = {
+        "annee": annee
+    }
+
     template = loader.get_template("analyse/template_intra.html")
-    return HttpResponse(template.render())
+    return HttpResponse(template.render(context, request))
+
 
 def analyse_inter(request):
+
     template = loader.get_template("analyse/template_inter.html")
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render())
 
 def get_graph(request, type, annee,graph, filtre):
 
