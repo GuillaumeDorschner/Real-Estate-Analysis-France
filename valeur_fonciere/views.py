@@ -69,7 +69,6 @@ def analyse_intra(request, annee):
     df = pd.read_csv(f'../data/annee_traitee/{annee}.csv',sep=',',header=0, low_memory=False)
     context = {
         "annee": annee,
-        "graph": Vente_Par_Mois(request, df),
     }
     
     template = loader.get_template("analyse/template_intra.html")
