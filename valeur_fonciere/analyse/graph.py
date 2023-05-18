@@ -15,7 +15,7 @@ from branca.colormap import linear
 from django.http import HttpResponse
 matplotlib.use('Agg')
 
-def Vente_par_Mois(request, df):
+def vente_par_mois(request, df):
     df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%d-%m')
 
     plt.title('Nombre de ventes répartis par mois')
@@ -34,7 +34,7 @@ def Vente_par_Mois(request, df):
 
     return JsonResponse({"graph": svg_data})
 
-def repartionTypeBien(request, df):
+def repartion_type_bien(request, df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
@@ -57,7 +57,7 @@ def repartionTypeBien(request, df):
 #     image_base64 = base64.b64encode(retour.getvalue()).decode('utf-8')
 #     return JsonResponse({"graph": image_base64})
 
-def top5cher(request, df):
+def top_5_cher(request, df):
     """top 5 des départements les plus chers"""
     prix_m2_departement = prix_m2(df)
     top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
@@ -74,7 +74,7 @@ def top5cher(request, df):
     retour.close()  # close the BytesIO object
     return JsonResponse({"graph": image_base64})
 
-def top5moinscher(request, df):
+def top_5_moins_cher(request, df):
     """top 5 des départements les moins chers"""
     prix_m2_departement = prix_m2(df)
     top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
@@ -99,7 +99,7 @@ def prix_m2(m2):
     return prix_m2_departement
 
 
-def heatMap(request, df):
+def heat_map(request, df):
 
     property_changes = df['Code departement'].value_counts().reset_index()
     property_changes.columns = ['Code', 'property_changes']

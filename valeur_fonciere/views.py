@@ -92,20 +92,18 @@ def get_graph(request, type, annee, graph):
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
 
-        if graph == "Vente_par_Mois":
-            return Vente_par_Mois(request, dfTemp)
-        elif graph == "repartionTypeBien":
-            return repartionTypeBien(request, dfTemp)
-        elif graph == "data_departement":
-            return data_departement(request, dfTemp)
-        elif graph == "top5cher":
-            return top5cher(request, dfTemp)
-        elif graph == "top5moinscher":
-            return heatMap(request, dfTemp)
+        if graph == "vente_par_mois":
+            return vente_par_mois(request, dfTemp)
+        elif graph == "repartion_type_bien":
+            return repartion_type_bien(request, dfTemp)
+        elif graph == "top_5_cher":
+            return top_5_cher(request, dfTemp)
+        elif graph == "top_5_moins_cher":
+            return top_5_moins_cher(request, dfTemp)
         elif graph == "prix_m2":
             return prix_m2(request, dfTemp)
-        elif graph == "heatMap":
-            return heatMap(request, dfTemp)
+        elif graph == "heat_map":
+            return heat_map(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 
