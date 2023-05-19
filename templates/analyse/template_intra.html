@@ -124,11 +124,12 @@
 
 
       function loadAllGraph(filters) {
-        loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'top_5', filters);
-        // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
-        // loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
-        // loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
-        // loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+        loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
+        loadGraph('#loading_top_5', '#content_top_5', '#graph_container1', 'top_5', filters);
+        loadGraph('#loading_vol_monetaire', '#content_vol_monetaire', '#graph_vol_monetaire', 'vol_monetaire', filters);
+        loadGraph('#loading_prix_m2', '#content_prix_m2', '#graph_prix_m2', 'prix_m2', filters);
+        loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+        loadGraph('#loading_nb_ventes_par_mois', '#content_nb_ventes_par_mois', '#graph_nb_ventes_par_mois', 'nb_ventes_par_mois', filters);
       }
 
       loadAllGraph();
@@ -293,29 +294,6 @@
 
 
 
-    nb_ventes_par_mois
-    <div id="loading_vente_par_mois" class="loading" style="display: none;">
-      <h2>Loading...</h2>
-    </div>
-
-    <div id="content_vente_par_mois" class="content" style="display: none;">
-      <div id="graph_vente_par_mois">
-        <h2>vente_par_mois</h2>
-      </div>
-    </div>
-
-    <!-- vente_par_mois
-    <div id="loading_vente_par_mois" class="loading" style="display: none;">
-      <h2>Loading...</h2>
-    </div>
-
-    <div id="content_vente_par_mois" class="content" style="display: none;">
-      <div id="graph_vente_par_mois">
-        <h2>vente_par_mois</h2>
-      </div>
-    </div>
-
-
     repartion_type_bien
     <div id="loading_repartion_type_bien" class="loading" style="display: none;">
       <h2>Loading...</h2>
@@ -327,25 +305,37 @@
       </div>
     </div>
 
-    top_5_cher
-    <div id="loading_top_5_cher" class="loading" style="display: none;">
+
+    top_5
+    <div id="loading_top_5" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
 
-    <div id="content_top_5_cher" class="content" style="display: none;">
-      <div id="graph_top_5_cher">
-        <h2>top_5_cher</h2>
+    <div id="content_top_5" class="content" style="display: none;">
+      <div id="graph_top_5">
+        <h2>top_5</h2>
       </div>
     </div>
 
-    top_5_moins_cher
-    <div id="loading_top_5_moins_cher" class="loading" style="display: none;">
+    vol_monetaire
+    <div id="loading_vol_monetaire" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
 
-    <div id="content_top_5_moins_cher" class="content" style="display: none;">
-      <div id="graph_top_5_moins_cher">
-        <h2>top_5_moins_cher</h2>
+    <div id="content_vol_monetaire" class="content" style="display: none;">
+      <div id="graph_vol_monetaire">
+        <h2>vol_monetaire</h2>
+      </div>
+    </div>
+
+    prix_m2
+    <div id="loading_prix_m2" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_prix_m2" class="content" style="display: none;">
+      <div id="graph_prix_m2">
+        <h2>prix_m2</h2>
       </div>
     </div>
 
@@ -359,7 +349,19 @@
       <div id="heatmap_container">
         <h2>Heatmap</h2>
       </div>
-    </div> -->
+    </div>
+
+    nb_ventes_par_mois
+
+    <div id="loading_nb_ventes_par_mois" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_nb_ventes_par_mois" class="content" style="display: none;">
+      <div id="nb_ventes_par_mois_container">
+        <h2>nb_ventes_par_mois</h2>
+      </div>
+    </div>
 
 
     <!-- template-->
