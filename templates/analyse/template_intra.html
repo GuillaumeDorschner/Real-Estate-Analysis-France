@@ -114,6 +114,18 @@
       });
 
 
+      var startDateInput = document.getElementById('filter-start-date');
+      var endDateInput = document.getElementById('filter-end-date');
+
+      startDateInput.addEventListener('change', function () {
+        endDateInput.min = startDateInput.value;
+      });
+
+      endDateInput.addEventListener('change', function () {
+        startDateInput.max = endDateInput.value;
+      });
+
+
       function loadAllGraph(filters) {
         loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'top_5', filters);
         // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
