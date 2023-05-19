@@ -1,11 +1,14 @@
 import os
 import sys
+import json
 import pandas as pd
 from django.http import Http404
 from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+# from .analyse.graph_inter import *
+# from .analyse.graph_intra import *
 from .analyse.graph import *
 
 
@@ -26,6 +29,11 @@ pages.sort(reverse=True)
 
 df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
 
+with open('./data/regions/regions_dict.json', 'r') as f:
+    data = json.load(f)
+
+regions = list(data.keys())
+departements = [dept for sublist in data.values() for dept in sublist]
 
 
 # # -------------all data----------------
@@ -61,6 +69,8 @@ def about(request):
 def analyse(request):
     context = {
         "pages": pages,
+        'regions': regions,
+        'departements': departements
     }
     
     template = loader.get_template("analyse/index.html")
@@ -69,7 +79,9 @@ def analyse(request):
 def analyse_intra(request, annee):
 
     context = {
-        "annee": annee
+        "annee": annee,
+        'regions': regions,
+        'departements': departements
     }
 
     template = loader.get_template("analyse/template_intra.html")
