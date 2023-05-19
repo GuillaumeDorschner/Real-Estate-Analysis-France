@@ -18,8 +18,6 @@
         $(loadingId).show();
         $(contentId).hide();
 
-        console.log(graph);
-
         $.ajax({
           type: 'POST',
           url: `/get_graph/intra/{{annee}}/${graph}/`,
@@ -60,7 +58,6 @@
 
         filters = form_data;
 
-        console.log(filters);
         loadAllGraph(filters);
       });
 
