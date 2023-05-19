@@ -96,8 +96,10 @@ def analyse_inter(request):
 @csrf_exempt
 def get_graph(request, type, annee, graph):
     filters = {}
-    if request.method == 'POST':
-        filters = json.loads(request.body)
+    # if request.method == 'POST':
+    #     filters = json.loads(request.body)
+
+    print(type, annee, graph)
 
     if type == "inter":
         print("inter")

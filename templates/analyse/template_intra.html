@@ -20,6 +20,8 @@
         $(loadingId).show();
         $(contentId).hide();
 
+        console.log(graph);
+
         $.ajax({
           type: 'POST',
           url: `/get_graph/intra/{{annee}}/${graph}/`,
@@ -93,7 +95,7 @@
         loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
       }
 
-      loadGraph();
+      loadAllGraph();
 
     });
   </script>
