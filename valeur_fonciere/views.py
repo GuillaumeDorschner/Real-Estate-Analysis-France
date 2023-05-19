@@ -100,16 +100,22 @@ def get_graph(request, type, annee, graph):
     #     filters = json.loads(request.body)
 
     if type == "inter":
-        print("inter")
         dfTemp = filter_df(dfTemp, filters)
+
+        if graph == "graph_dynamique1":
+            return graph_dynamique1(request, dfTemp)
+        elif graph == "graph_dynamique2":
+            return graoh_dynamique2(request, dfTemp)
+        elif graph == "evo_m_Carrez":
+            return evo_m_Carrez(request, dfTemp)
+        elif graph == "evo_m2":
+            return evo_m2(request, dfTemp)
 
     else:
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
 
-        if graph == "vente_par_mois":
-            return vente_par_mois(request, dfTemp)
-        elif graph == "repartion_type_bien":
+        if graph == "repartion_type_bien":
             return repartion_type_bien(request, dfTemp)
         elif graph == "top_5_cher":
             return top_5_cher(request, dfTemp)
@@ -119,18 +125,10 @@ def get_graph(request, type, annee, graph):
             return vol_monetaire(request, dfTemp)
         elif graph == "prix_m2":
             return prix_m2(request, dfTemp)
-        elif graph == "nb_ventes":
-            return nb_ventes(request, dfTemp)
-        elif graph == "evo_m2":
-            return evo_m2(request, dfTemp)
         elif graph == "nb_ventes_par_mois":
             return nb_ventes_par_mois(request, dfTemp)
-        elif graph == "evo_m_Carrez":
-            return evo_m_Carrez(request, dfTemp)
-        elif graph == "graph_dynamique1":
-            return graph_dynamique1(request, dfTemp)
-        elif graph == "graoh_dynamique2":
-            return graoh_dynamique2(request, dfTemp)
+        # elif graph == "nb_ventes":
+        #     return nb_ventes(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 

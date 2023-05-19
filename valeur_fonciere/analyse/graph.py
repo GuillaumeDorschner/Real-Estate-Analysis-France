@@ -51,31 +51,35 @@ def repartion_type_bien(request, df):
 
 def top_5_cher(request, df):
     """top 5 des départements les plus chers"""
-    prix_m2_departement = prix_m2(df)
-    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
+    departements = json.loads(open("./data/departements/departements_dict.json"))
+    m2 = prix_m2(df)
+    print(departements)
+    top5_chers= pd.DataFrame(m2.sort_values(by="Prix mètre carré",ascending=False).head(5))
+    for i in top5_chers["Code departement"]:
+        top5_chers.loc[top5_chers["Code departement"] == i,"Département"] = departements.get(str(i))
+    temp = top5_chers.drop(columns="Code departement")
+    temp.style.background_gradient(cmap='Reds')
 
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
-    ax.axis('off')
-    pd.plotting.table(ax, top5_chers)  # plot the table
-
-    html_fig = mpld3.fig_to_html(fig)
-    plt.close(fig)  # close the figure
+    html_fig = mpld3.fig_to_html(temp)
+    plt.close(temp)  # close the figure
 
     return HttpResponse(html_fig)
 
 def top_5_moins_cher(request, df):
     """top 5 des départements les moins chers"""
-    prix_m2_departement = prix_m2(df)
-    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
+    departements = json.loads(open("./data/departements/departements_dict.json"))
+    m2 = prix_m2(df)
+    top5_moins_chers= pd.DataFrame(m2.sort_values(by="Prix mètre carré",ascending=True).head(5))
+    for i in top5_moins_chers["Code departement"]:
+        top5_moins_chers.loc[top5_moins_chers["Code departement"] == i,"Département"] = departements.get(str(i))
+    temp = top5_moins_chers.drop(columns="Code departement")
+    temp.style.background_gradient(cmap='Greens')
 
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
-    ax.axis('off')
-    pd.plotting.table(ax, top5_moins_chers)  # plot the table
-
-    html_fig = mpld3.fig_to_html(fig)
-    plt.close(fig)  # close the figure
+    html_fig = mpld3.fig_to_html(temp)
+    plt.close(temp)  # close the figure
 
     return HttpResponse(html_fig)
+
 
 def vol_monetaire(request,df):
     """Volume monétaire par département
@@ -99,7 +103,6 @@ def vol_monetaire(request,df):
 def prix_m2(df):
     """Calcul du prix moyen au m2 par département
     graph non interactif"""
-    df["Month mutation"] = df["Date mutation"].dt.month
     prix_metre_carre = df[(df["Type local"] != "Dépendance")].reset_index(drop = True)
     prix_metre_carre = prix_metre_carre.dropna(subset=['Type local'])
 
@@ -296,7 +299,7 @@ def graph_dynamique1(request,data):
     fig_html = mpld3.fig_to_html(plt.gcf())
     return HttpResponse(fig_html)
 
-def graoh_dynamique2(request,carrez):
+def graph_dynamique2(request,carrez):
     cnf = '#393e46'
     temp = carrez.copy()
     temp['Region'] = temp.apply(location, axis=1)
