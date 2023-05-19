@@ -125,6 +125,8 @@ def get_graph(request, type, annee, graph):
             return vol_monetaire(request, dfTemp)
         elif graph == "prix_m2":
             return prix_m2(request, dfTemp)
+        elif graph == "heat_map":
+            return heat_map(request, dfTemp)
         elif graph == "nb_ventes_par_mois":
             return nb_ventes_par_mois(request, dfTemp)
         # elif graph == "nb_ventes":
