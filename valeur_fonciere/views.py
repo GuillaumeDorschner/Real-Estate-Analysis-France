@@ -27,7 +27,7 @@ df ={}
 
 pages.sort(reverse=True)
 
-df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=';',header=0, low_memory=False)
+df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=',',header=0, low_memory=False)
 
 with open('./data/regions/regions_dict.json', 'r') as f:
     data = json.load(f)
@@ -55,7 +55,7 @@ departements.sort()
 # for index, annee in enumerate(pages):
 #     sys.stdout.write("\rFile : {} / {}".format(index+1, total_files))
 #     sys.stdout.flush()
-#     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=';',header=0,  low_memory=False)
+#     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=',',header=0,  low_memory=False)
 
 # print("\nData loaded ✅\n")
 
