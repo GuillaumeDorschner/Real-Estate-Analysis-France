@@ -12,13 +12,13 @@
     var filters = {}
     var regions = [];
     var departements = [];
-    var regionsOnly = false;
-    var departementsOnly = false;
 
     $(document).ready(function () {
       function loadGraph(loadingId, contentId, containerId, graph, filters) {
         $(loadingId).show();
         $(contentId).hide();
+
+        console.log(graph);
 
         $.ajax({
           type: 'POST',
@@ -42,58 +42,87 @@
 
       $('#filter-form').submit(function (e) {
         e.preventDefault();
-        var form_data = $(this).serializeArray().reduce(function (a, x) { a[x.name] = x.value; return a; }, {});
+        var form_data = $(this).serializeArray().reduce(function (a, x) {
+          if (x.name.endsWith('[]')) {
+            var newName = x.name.slice(0, -2);
+            if (!a[newName]) {
+              a[newName] = [];
+            }
+            a[newName].push(x.value);
+          } else {
+            a[x.name] = x.value;
+          }
+          return a;
+        }, {});
+
+        delete form_data['region'];
+        delete form_data['departement'];
+
         filters = form_data;
+
         console.log(filters);
-
-        console.log(regions);
-        console.log(departements);
-        // loadAllGraph(filters);
+        loadAllGraph(filters);
       });
-
 
 
       $('#filter-region').change(function () {
         var region = $(this).val();
-        regions.push(region);
-        $('#selected-regions').append('<div><input type="checkbox" name="regions[]" value="' + region + '" checked> ' + region + '</div>');
+        if (regions.indexOf(region) === -1) {
+          regions.push(region);
+          $('#selected-regions').append('<div><input class="region-department-checkbox" type="checkbox" name="regions[]" value="' + region + '" checked>' + region + '</div>');
+        }
       });
 
       $('#filter-departement').change(function () {
         var departement = $(this).val();
-        departements.push(departement);
-        $('#selected-departements').append('<div><input type="checkbox" name="departements[]" value="' + departement + '" checked> ' + departement + '</div>');
+        if (departements.indexOf(departement) === -1) {
+          departements.push(departement);
+          $('#selected-departements').append('<div><input class="region-department-checkbox" type="checkbox" name="departements[]" value="' + departement + '" checked>' + departement + '</div>');
+        }
       });
 
-      $(document).on('change', 'input[type="checkbox"]', function () {
+
+      $(document).on('change', 'input.region-department-checkbox[type="checkbox"]', function () {
         if (!this.checked) {
           var value = $(this).val();
           if ($(this).attr('name') === 'regions[]') {
-            regions = regions.filter(function(item) {
-              return item !== value
-            });
+            var index = regions.indexOf(value);
+            if (index !== -1) {
+              regions.splice(index, 1);
+            }
           } else if ($(this).attr('name') === 'departements[]') {
-            departements = departements.filter(function(item) {
-              return item !== value
-            });
+            var index = departements.indexOf(value);
+            if (index !== -1) {
+              departements.splice(index, 1);
+            }
           }
           $(this).parent().remove();
         }
       });
 
+
       $('#region-department-toggle').change(function () {
-        regionsOnly = departementsOnly = this.checked;
+        if (this.checked) {
+          $('#filter-region, #filter-departement').attr('name', '');
+          $('#selected-regions, #selected-departements').attr('name', '');
+        } else {
+          $('#filter-region').attr('name', 'region');
+          $('#filter-departement').attr('name', 'departement');
+          $('#selected-regions').attr('name', 'regions[]');
+          $('#selected-departements').attr('name', 'departements[]');
+        }
       });
 
+
       function loadAllGraph(filters) {
-        loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'vente_par_mois', filters);
-        loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
-        loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
-        loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
-        loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+        loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'top_5', filters);
+        // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
+        // loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
+        // loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
+        // loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
       }
 
-      loadGraph();
+      loadAllGraph();
 
     });
   </script>
@@ -133,9 +162,12 @@
   </div>
 
   <div class="mx-auto max-w-screen-xl px-4 md:px-8">
+
+
     <!-- template-->
 
-    <h2 class="text-4xl font-bold">Analyse de {{anne}}</h2>
+
+    <h2 class="text-4xl font-bold">Analyse de {{annee}}</h2>
 
     </br>
     </br>
@@ -197,27 +229,30 @@
         </div>
 
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="region-department-toggle">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+            for="region-department-toggle">
             Filtrer seulement par Régions / Départements
           </label>
           <input type="checkbox" id="region-department-toggle" name="region-department-toggle">
         </div>
-    
+
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-area">
             Surface Carrez maximum
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-area" name="area" type="number" placeholder="Surface Carrez maximum">
+            id="filter-area" name="surface-carrez-maximum" type="number" placeholder="Surface Carrez maximum">
         </div>
+
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-start-date">
             Date de début
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-start-date" name="start-date" type="date" placeholder="2018-01-01">
+            id="filter-start-date" name="start-date" type="date" placeholder="{{ annee }}-01-01" min="{{ annee }}-01-01"
+            max="{{ annee }}-12-31">
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-end-date">
@@ -225,8 +260,10 @@
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-end-date" name="end-date" type="date" placeholder="2018-12-31">
+            id="filter-end-date" name="end-date" type="date" placeholder="{{ annee }}-12-31" min="{{ annee }}-01-01"
+            max="{{ annee }}-12-31">
         </div>
+
 
       </div>
       <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" type="submit">
@@ -236,7 +273,18 @@
 
 
 
-    vente_par_mois
+    nb_ventes_par_mois
+    <div id="loading_vente_par_mois" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+
+    <div id="content_vente_par_mois" class="content" style="display: none;">
+      <div id="graph_vente_par_mois">
+        <h2>vente_par_mois</h2>
+      </div>
+    </div>
+
+    <!-- vente_par_mois
     <div id="loading_vente_par_mois" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
@@ -291,11 +339,12 @@
       <div id="heatmap_container">
         <h2>Heatmap</h2>
       </div>
-    </div>
-
+    </div> -->
 
 
     <!-- template-->
+
+
   </div>
 
   <div class="bg-gray-900">
@@ -304,9 +353,6 @@
         <div class="col-span-full lg:col-span-2">
 
         </div>
-
-
-
         <div>
           <div class="mb-4 font-bold uppercase tracking-widest text-gray-100">Legal</div>
 
