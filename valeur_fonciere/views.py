@@ -142,19 +142,16 @@ def filter_df(df, filters):
         if not value:
             continue
 
-        if key in df.columns:
-            if key == "start-date":
-                df = df[df['Date mutation'] >= value]
-            elif key == "end-date":
-                df = df[df['Date mutation'] <= value]
-            elif key == "price":
-                df = df[df['Valeur fonciere'] == float(value)]
-            elif key == "type":
-                df = df[df['Type local'] == value]
-            elif key == "surface-carrez-maximum":
-                df = df[df['Surface Carrez du 1er lot'] <= float(value)]
-            else:
-                df = df[df[key] == value]
+        if key == "start-date":
+            df = df[df['Date mutation'] >= value]
+        elif key == "end-date":
+            df = df[df['Date mutation'] <= value]
+        elif key == "price":
+            df = df[df['Valeur fonciere'] == float(value)]
+        elif key == "type":
+            df = df[df['Type local'] == value]
+        elif key == "surface-carrez-maximum":
+            df = df[df['Surface Carrez du 1er lot'] <= float(value)]
         elif key == "departements":
             if filters.get("region-department-toggle", "off") == "on":
                 df = df[df['Code departement'].isin(value)]

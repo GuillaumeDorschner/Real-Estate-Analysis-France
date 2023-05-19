@@ -192,17 +192,13 @@
             id="filter-type" name="type">
             <option value="">Tous</option>
             <option value="Maison">Maison</option>
+            <option value="Dépendance">Dépendance</option>
             <option value="Appartement">Appartement</option>
+            <option value="Local industriel. commercial ou assimilé">Local industriel. commercial ou assimilé</option>
           </select>
         </div>
-        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
-          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-price">
-            Prix maximum
-          </label>
-          <input
-            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-price" name="price" type="number" placeholder="100000">
-        </div>
+
+
 
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-region">
@@ -237,14 +233,29 @@
           </div>
         </div>
 
+
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
             for="region-department-toggle">
-            Filtrer seulement par Régions / Départements
+            Filtre par région/département
           </label>
-          <input type="checkbox" id="region-department-toggle" name="region-department-toggle">
+          <select
+            class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            id="region-department-toggle" name="region-department-toggle">
+            <option value="on">Search</option>
+            <option value="off">Filtre</option>
+          </select>
         </div>
 
+
+        <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
+          <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-price">
+            Prix maximum
+          </label>
+          <input
+            class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+            id="filter-price" name="price" type="number" placeholder="100000">
+        </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-area">
             Surface Carrez maximum
