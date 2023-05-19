@@ -49,42 +49,27 @@ def repartion_type_bien(request, df):
 
     return HttpResponse(html_fig)
 
-def top_5_cher(request, df):
+def top_5(request, data):
     """top 5 des départements les plus chers"""
-    departements = json.loads(open("./data/departements/departements_dict.json"))
-    m2 = prix_m2(df)
-    print(departements)
-    top5_chers= pd.DataFrame(m2.sort_values(by="Prix mètre carré",ascending=False).head(5))
-    for i in top5_chers["Code departement"]:
-        top5_chers.loc[top5_chers["Code departement"] == i,"Département"] = departements.get(str(i))
-    temp = top5_chers.drop(columns="Code departement")
-    temp.style.background_gradient(cmap='Reds')
-
-    html_fig = mpld3.fig_to_html(temp)
-    plt.close(temp)  # close the figure
-
-    return HttpResponse(html_fig)
-
-def top_5_moins_cher(request, df):
-    """top 5 des départements les moins chers"""
-    departements = json.loads(open("./data/departements/departements_dict.json"))
-    m2 = prix_m2(df)
-    top5_moins_chers= pd.DataFrame(m2.sort_values(by="Prix mètre carré",ascending=True).head(5))
-    for i in top5_moins_chers["Code departement"]:
-        top5_moins_chers.loc[top5_moins_chers["Code departement"] == i,"Département"] = departements.get(str(i))
-    temp = top5_moins_chers.drop(columns="Code departement")
-    temp.style.background_gradient(cmap='Greens')
-
-    html_fig = mpld3.fig_to_html(temp)
-    plt.close(temp)  # close the figure
-
-    return HttpResponse(html_fig)
+    m2 = pd.DataFrame(data)
+    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
+    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
+    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
+    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
+    top5_chers.style.background_gradient(cmap='Reds')
+    top5_moins_chers.style.background_gradient(cmap='Greens')
+    fig, ax = plt.subplots(figsize=(12, 4))
+    ax.axis('off')
+    cher = top5_chers.to_html()
+    moins_cher = top5_moins_chers.to_html()
+    retour = f'<div class=""flex flex-row""><div>{cher}</div><div>{moins_cher}</div></div>'
+    return retour
 
 
 def vol_monetaire(request,df):
     """Volume monétaire par département
     graph fixe"""
-    DEPARTMENTS = json.load(open("../data/departements/departements_dict.json")) 
+    DEPARTMENTS = json.load(open("./data/departements/departements_dict.json")) 
     dict_vol_ventes = df.groupby(["Code departement"])["Valeur fonciere"].sum().reset_index()
     dict_vol_ventes.columns = ["Code departement","Volume monétaire"]
     dict_vol_ventes["Volume monétaire"] = round(dict_vol_ventes["Volume monétaire"]/1000000000,2)

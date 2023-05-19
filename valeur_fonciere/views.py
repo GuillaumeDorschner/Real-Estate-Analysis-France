@@ -7,9 +7,9 @@ from django.shortcuts import render
 from django.template import loader
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-# from .analyse.graph_inter import *
-# from .analyse.graph_intra import *
 from .analyse.graph import *
+from json.decoder import JSONDecodeError
+
 
 
 
@@ -96,8 +96,11 @@ def analyse_inter(request):
 @csrf_exempt
 def get_graph(request, type, annee, graph):
     filters = {}
-    # if request.method == 'POST':
-    #     filters = json.loads(request.body)
+    try:
+        if request.method == 'POST':
+            filters = json.loads(request.body)
+    except JSONDecodeError:
+        pass
 
     if type == "inter":
         dfTemp = filter_df(dfTemp, filters)
@@ -117,10 +120,8 @@ def get_graph(request, type, annee, graph):
 
         if graph == "repartion_type_bien":
             return repartion_type_bien(request, dfTemp)
-        elif graph == "top_5_cher":
-            return top_5_cher(request, dfTemp)
-        elif graph == "top_5_moins_cher":
-            return top_5_moins_cher(request, dfTemp)
+        elif graph == "top_5":
+            return top_5(request, dfTemp)
         elif graph == "vol_monetaire":
             return vol_monetaire(request, dfTemp)
         elif graph == "prix_m2":
@@ -137,7 +138,15 @@ def get_graph(request, type, annee, graph):
 def filter_df(df, filters):
     for key, value in filters.items():
         if key in df.columns:
-            df = df[df[key] == value]
+            if key == "start-date":
+                df = df[df['date'] >= value] 
+            elif key == "end-date":
+                df = df[df['date'] <= value]
+            elif key in ["regions", "departements"]:
+                df = df[df[key].isin(value)]
+            else:
+                df = df[df[key] == value]
         else:
             return Http404("Filter does not exist")
     return df
+
