@@ -15,19 +15,20 @@ from json.decoder import JSONDecodeError
 
 print("Loading data...\n")
 
-# -------------test data----------------
-directory = './data/annee_traitee'
-pages = []
+# # -------------test data----------------
+# directory = './data/annee_traitee'
+# pages = []
 
-for filename in os.listdir(directory):
-    if os.path.isfile(os.path.join(directory, filename)):
-        pages.append(filename.split('.')[0])
+# for filename in os.listdir(directory):
+#     if os.path.isfile(os.path.join(directory, filename)):
+#         pages.append(filename.split('.')[0])
 
-df ={} 
+# df ={} 
 
-pages.sort(reverse=True)
+# pages.sort(reverse=True)
 
-df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=',',header=0, low_memory=False)
+# df['2022'] = pd.read_csv('./data/annee_traitee/2022.csv',sep=',',header=0, low_memory=False)
+
 
 with open('./data/regions/regions_dict.json', 'r') as f:
     data = json.load(f)
@@ -36,28 +37,27 @@ regions = list(data.keys())
 departements = [dept for sublist in data.values() for dept in sublist]
 departements.sort()
 
+# -------------all data----------------
+# import the csv data
+directory = './data/annee_traitee'
+pages = []
 
-# # -------------all data----------------
-# # import the csv data
-# directory = './data/annee_traitee'
-# pages = []
+total_files = len([name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))])
 
-# total_files = len([name for name in os.listdir(directory) if os.path.isfile(os.path.join(directory, name))])
+for filename in os.listdir(directory):
+    if os.path.isfile(os.path.join(directory, filename)):
+        pages.append(filename.split('.')[0])
 
-# for filename in os.listdir(directory):
-#     if os.path.isfile(os.path.join(directory, filename)):
-#         pages.append(filename.split('.')[0])
+pages.sort(reverse=True)
 
-# pages.sort(reverse=True)
+df = {}
 
-# df = {}
+for index, annee in enumerate(pages):
+    sys.stdout.write("\rFile : {} / {}".format(index+1, total_files))
+    sys.stdout.flush()
+    df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=',',header=0,  low_memory=False)
 
-# for index, annee in enumerate(pages):
-#     sys.stdout.write("\rFile : {} / {}".format(index+1, total_files))
-#     sys.stdout.flush()
-#     df[annee] = pd.read_csv('./data/annee_traitee/'+annee+'.csv',sep=',',header=0,  low_memory=False)
-
-# print("\nData loaded ✅\n")
+print("\nData loaded ✅\n")
 
 
 
@@ -104,7 +104,9 @@ def get_graph(request, type, annee, graph):
         pass
 
     if type == "inter":
-        dfTemp = filter_df(dfTemp, filters)
+        dfTemp = {}
+        for annee, df_year in df.items():
+            dfTemp[annee] = filter_df(df_year, filters)
 
         if graph == "graph_dynamique1":
             return graph_dynamique1(request, dfTemp)
@@ -131,8 +133,6 @@ def get_graph(request, type, annee, graph):
             return heat_map(request, dfTemp)
         elif graph == "nb_ventes_par_mois":
             return nb_ventes_par_mois(request, dfTemp)
-        # elif graph == "nb_ventes":
-        #     return nb_ventes(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 

@@ -20,7 +20,7 @@
 
         $.ajax({
           type: 'POST',
-          url: `/get_graph/intra/{{annee}}/${graph}/`,
+          url: `/get_graph/inter/none/${graph}/`,
           contentType: 'html',
           data: JSON.stringify(filters),
           success: function (data) {
@@ -124,7 +124,7 @@
 
 
       function loadAllGraph(filters) {
-        loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'top_5', filters);
+        loadGraph('#loading_vente_par_mois', '#content_vente_par_mois', '#graph_vente_par_mois', 'graph_dynamique1', filters);
         // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
         // loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
         // loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
@@ -176,7 +176,7 @@
     <!-- template-->
 
 
-    <h2 class="text-4xl font-bold">Analyse de {{annee}}</h2>
+    <h2 class="text-4xl font-bold">Analyse inter année</h2>
 
     </br>
     </br>
@@ -271,8 +271,8 @@
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-start-date" name="start-date" type="date" placeholder="{{ annee }}-01-01" min="{{ annee }}-01-01"
-            max="{{ annee }}-12-31">
+            id="filter-start-date" name="start-date" type="date" placeholder="2021-01-31" min="2018-01-01"
+            max="2022-12-31">
         </div>
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">
           <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="filter-end-date">
@@ -280,8 +280,8 @@
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-end-date" name="end-date" type="date" placeholder="{{ annee }}-12-31" min="{{ annee }}-01-01"
-            max="{{ annee }}-12-31">
+            id="filter-end-date" name="end-date" type="date" placeholder="2021-12-31" min="2018-01-01"
+            max="2022-12-31">
         </div>
 
 
