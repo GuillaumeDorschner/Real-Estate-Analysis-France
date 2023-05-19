@@ -49,38 +49,26 @@ def repartion_type_bien(request, df):
 
     return HttpResponse(html_fig)
 
-def top_5_cher(request, df):
+def top_5(request, data):
     """top 5 des départements les plus chers"""
-    prix_m2_departement = prix_m2(df)
+    m2 = pd.DataFrame(data)
+    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
+    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
     top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
-
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
-    ax.axis('off')
-    pd.plotting.table(ax, top5_chers)  # plot the table
-
-    html_fig = mpld3.fig_to_html(fig)
-    plt.close(fig)  # close the figure
-
-    return HttpResponse(html_fig)
-
-def top_5_moins_cher(request, df):
-    """top 5 des départements les moins chers"""
-    prix_m2_departement = prix_m2(df)
     top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
-
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
+    top5_chers.style.background_gradient(cmap='Reds')
+    top5_moins_chers.style.background_gradient(cmap='Greens')
+    fig, ax = plt.subplots(figsize=(12, 4))
     ax.axis('off')
-    pd.plotting.table(ax, top5_moins_chers)  # plot the table
-
-    html_fig = mpld3.fig_to_html(fig)
-    plt.close(fig)  # close the figure
-
-    return HttpResponse(html_fig)
+    cher = top5_chers.to_html()
+    moins_cher = top5_moins_chers.to_html()
+    html = f'<div class="flex flex-row"><div>{cher}</div><div>{moins_cher}</div></div>'
+    return HttpResponse(html)
 
 def vol_monetaire(request,df):
     """Volume monétaire par département
     graph fixe"""
-    DEPARTMENTS = json.load(open("../data/departements/departements_dict.json")) 
+    DEPARTMENTS = json.load(open("./data/departements/departements_dict.json")) 
     dict_vol_ventes = df.groupby(["Code departement"])["Valeur fonciere"].sum().reset_index()
     dict_vol_ventes.columns = ["Code departement","Volume monétaire"]
     dict_vol_ventes["Volume monétaire"] = round(dict_vol_ventes["Volume monétaire"]/1000000000,2)
@@ -96,14 +84,14 @@ def vol_monetaire(request,df):
     image_html = fig.to_html()
     return JsonResponse({"Vol_monetaire": image_html})
 
-def prix_m2(request,df):
+def prix_m2(df):
     """Calcul du prix moyen au m2 par département
     graph non interactif"""
-    df['Valeur fonciere par m2'] = df['Valeur fonciere'] / df['Surface terrain']
-    prix_m2_departement = df.groupby('Code departement')['Valeur fonciere par m2'].mean()
-    return prix_m2_departement
+    prix_metre_carre = df[(df["Type local"] != "Dépendance")].reset_index(drop = True)
+    prix_metre_carre = prix_metre_carre.dropna(subset=['Type local'])
 
     prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
+    
     return prix_metre_carre
 
 def heat_map(request, df):
@@ -182,8 +170,10 @@ def nb_ventes(request, df):
 
     fig.update_xaxes(range=[1000, 4000], row=1, col=2)
     
-    fig_html = fig.to_html()
-    return JsonResponse({"nb_ventes": fig_html})
+    html_fig = mpld3.fig_to_html(fig)
+    plt.close(fig)
+
+    return HttpResponse(html_fig)
 
 def evo_m2(request,data):
     temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
@@ -203,9 +193,11 @@ def evo_m2(request,data):
 
     fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
                 title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
-    retour = mpld3.fig_to_html(plt.gcf())
-    plt.close()
-    return HttpResponse(retour)
+    
+    html_fig = mpld3.fig_to_html(fig)
+    plt.close(fig)  # close the figure
+
+    return HttpResponse(html_fig)
 
 def nb_ventes_par_mois(request, data):
     """Nombre de ventes par mois
@@ -291,7 +283,7 @@ def graph_dynamique1(request,data):
     fig_html = mpld3.fig_to_html(plt.gcf())
     return HttpResponse(fig_html)
 
-def graoh_dynamique2(request,carrez):
+def graph_dynamique2(request,carrez):
     cnf = '#393e46'
     temp = carrez.copy()
     temp['Region'] = temp.apply(location, axis=1)
