@@ -34,6 +34,7 @@ with open('./data/regions/regions_dict.json', 'r') as f:
 
 regions = list(data.keys())
 departements = [dept for sublist in data.values() for dept in sublist]
+departements.sort()
 
 
 # # -------------all data----------------
@@ -135,18 +136,38 @@ def get_graph(request, type, annee, graph):
         else:
             raise Http404("Graph does not exist")
 
+
 def filter_df(df, filters):
     for key, value in filters.items():
+        if not value:
+            continue
+
         if key in df.columns:
             if key == "start-date":
-                df = df[df['date'] >= value] 
+                df = df[df['Date mutation'] >= value]
             elif key == "end-date":
-                df = df[df['date'] <= value]
-            elif key in ["regions", "departements"]:
-                df = df[df[key].isin(value)]
+                df = df[df['Date mutation'] <= value]
+            elif key == "price":
+                df = df[df['Valeur fonciere'] == float(value)]
+            elif key == "type":
+                df = df[df['Type local'] == value]
+            elif key == "surface-carrez-maximum":
+                df = df[df['Surface Carrez du 1er lot'] <= float(value)]
             else:
                 df = df[df[key] == value]
+        elif key == "departements":
+            if filters.get("region-department-toggle", "off") == "on":
+                df = df[df['Code departement'].isin(value)]
+            else:
+                df = df[~df['Code departement'].isin(value)]
+        elif key == "regions":
+            if filters.get("region-department-toggle", "off") == "on":
+                df = df[df['Region'].isin(value)]
+            else:
+                df = df[~df['Region'].isin(value)]
+        elif key == "region-department-toggle":
+            continue
         else:
-            return Http404("Filter does not exist")
-    return df
+            raise Http404("Filter does not exist")
 
+    return df

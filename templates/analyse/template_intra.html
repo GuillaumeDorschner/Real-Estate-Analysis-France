@@ -69,7 +69,7 @@
         var region = $(this).val();
         if (regions.indexOf(region) === -1) {
           regions.push(region);
-          $('#selected-regions').append('<div><input type="checkbox" name="regions[]" value="' + region + '" checked>' + region + '</div>');
+          $('#selected-regions').append('<div><input class="region-department-checkbox" type="checkbox" name="regions[]" value="' + region + '" checked>' + region + '</div>');
         }
       });
 
@@ -77,11 +77,12 @@
         var departement = $(this).val();
         if (departements.indexOf(departement) === -1) {
           departements.push(departement);
-          $('#selected-departements').append('<div><input type="checkbox" name="departements[]" value="' + departement + '" checked>' + departement + '</div>');
+          $('#selected-departements').append('<div><input class="region-department-checkbox" type="checkbox" name="departements[]" value="' + departement + '" checked>' + departement + '</div>');
         }
       });
 
-      $(document).on('change', 'input[type="checkbox"]', function () {
+
+      $(document).on('change', 'input.region-department-checkbox[type="checkbox"]', function () {
         if (!this.checked) {
           var value = $(this).val();
           if ($(this).attr('name') === 'regions[]') {
@@ -241,7 +242,7 @@
           </label>
           <input
             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-            id="filter-area" name="area" type="number" placeholder="Surface Carrez maximum">
+            id="filter-area" name="surface-carrez-maximum" type="number" placeholder="Surface Carrez maximum">
         </div>
 
         <div class="w-full md:w-1/4 px-3 mb-6 md:mb-0">

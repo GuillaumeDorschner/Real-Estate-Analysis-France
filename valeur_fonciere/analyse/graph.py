@@ -62,9 +62,8 @@ def top_5(request, data):
     ax.axis('off')
     cher = top5_chers.to_html()
     moins_cher = top5_moins_chers.to_html()
-    retour = f'<div class=""flex flex-row""><div>{cher}</div><div>{moins_cher}</div></div>'
-    return retour
-
+    html = f'<div class="flex flex-row"><div>{cher}</div><div>{moins_cher}</div></div>'
+    return HttpResponse(html)
 
 def vol_monetaire(request,df):
     """Volume monétaire par département
