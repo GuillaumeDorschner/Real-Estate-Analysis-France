@@ -99,8 +99,6 @@ def get_graph(request, type, annee, graph):
     # if request.method == 'POST':
     #     filters = json.loads(request.body)
 
-    print(type, annee, graph)
-
     if type == "inter":
         print("inter")
         dfTemp = filter_df(dfTemp, filters)
@@ -117,10 +115,22 @@ def get_graph(request, type, annee, graph):
             return top_5_cher(request, dfTemp)
         elif graph == "top_5_moins_cher":
             return top_5_moins_cher(request, dfTemp)
+        elif graph == "vol_monetaire":
+            return vol_monetaire(request, dfTemp)
         elif graph == "prix_m2":
             return prix_m2(request, dfTemp)
-        elif graph == "heat_map":
-            return heat_map(request, dfTemp)
+        elif graph == "nb_ventes":
+            return nb_ventes(request, dfTemp)
+        elif graph == "evo_m2":
+            return evo_m2(request, dfTemp)
+        elif graph == "nb_ventes_par_mois":
+            return nb_ventes_par_mois(request, dfTemp)
+        elif graph == "evo_m_Carrez":
+            return evo_m_Carrez(request, dfTemp)
+        elif graph == "graph_dynamique1":
+            return graph_dynamique1(request, dfTemp)
+        elif graph == "graoh_dynamique2":
+            return graoh_dynamique2(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 

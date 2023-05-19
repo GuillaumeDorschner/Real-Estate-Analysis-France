@@ -96,14 +96,15 @@ def vol_monetaire(request,df):
     image_html = fig.to_html()
     return JsonResponse({"Vol_monetaire": image_html})
 
-def prix_m2(request,df):
+def prix_m2(df):
     """Calcul du prix moyen au m2 par département
     graph non interactif"""
-    df['Valeur fonciere par m2'] = df['Valeur fonciere'] / df['Surface terrain']
-    prix_m2_departement = df.groupby('Code departement')['Valeur fonciere par m2'].mean()
-    return prix_m2_departement
+    df["Month mutation"] = df["Date mutation"].dt.month
+    prix_metre_carre = df[(df["Type local"] != "Dépendance")].reset_index(drop = True)
+    prix_metre_carre = prix_metre_carre.dropna(subset=['Type local'])
 
     prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
+    
     return prix_metre_carre
 
 def heat_map(request, df):
@@ -182,8 +183,10 @@ def nb_ventes(request, df):
 
     fig.update_xaxes(range=[1000, 4000], row=1, col=2)
     
-    fig_html = fig.to_html()
-    return JsonResponse({"nb_ventes": fig_html})
+    html_fig = mpld3.fig_to_html(fig)
+    plt.close(fig)
+
+    return HttpResponse(html_fig)
 
 def evo_m2(request,data):
     temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
@@ -203,9 +206,11 @@ def evo_m2(request,data):
 
     fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
                 title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
-    retour = mpld3.fig_to_html(plt.gcf())
-    plt.close()
-    return HttpResponse(retour)
+    
+    html_fig = mpld3.fig_to_html(fig)
+    plt.close(fig)  # close the figure
+
+    return HttpResponse(html_fig)
 
 def nb_ventes_par_mois(request, data):
     """Nombre de ventes par mois
