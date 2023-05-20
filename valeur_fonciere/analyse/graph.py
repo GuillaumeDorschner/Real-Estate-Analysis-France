@@ -31,24 +31,32 @@ def repartition_type_bien(request,df):
     ax.set_ylabel('')
     ax.set_title('Répartition des types de biens')
     html_fig = mpld3.fig_to_html(fig)
-    plt.close(fig)
-
+    fig.clear()
     return HttpResponse(html_fig)
 
 def top_5(request,data):
     """top 5 des départements les plus chers"""
-    m2 = pd.DataFrame(data)
-    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
-    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
-    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
-    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
-    top5_chers.style.background_gradient(cmap='Reds')
-    retour = top5_moins_chers.style.background_gradient(cmap='Greens').to_html()
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
-    ax.axis('off')
-    html_table = build_table(top5_chers, 'blue_light', font_size='large', font_family='Arial')
-    html_table+= build_table(top5_moins_chers, 'blue_light', font_size='large', font_family='Arial')
-    return html_table
+    departement = json.load(open("./data/departements/departements_dict.json"))
+    m2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    print(m2['Code departement'].nunique())
+    m2["carrez_sum"] = m2["Surface Carrez du 1er lot"].fillna(0)  +  m2["Surface Carrez du 2eme lot"].fillna(0) + m2["Surface Carrez du 3eme lot"].fillna(0) + m2["Surface Carrez du 4eme lot"].fillna(0) + m2["Surface Carrez du 5eme lot"].fillna(0)
+    m2["Prix mètre carré"] = np.where(m2["carrez_sum"] != 0,m2["Valeur fonciere"]/m2["carrez_sum"],m2["Valeur fonciere"]/m2["Surface reelle bati"])
+    m2 = m2.drop(np.where(m2['Prix mètre carré'] > 25000)[0])
+    prix_m2_departement = m2.groupby('Code departement',as_index=False)['Prix mètre carré'].mean()
+    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(by="Prix mètre carré",ascending=False).head(5))
+    for i in top5_chers["Code departement"]:
+        top5_chers.loc[top5_chers["Code departement"] == i,"Département"] = departement.get(str(i))
+    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(by="Prix mètre carré",ascending=True).head(5))
+
+    for i in top5_moins_chers["Code departement"]:
+        top5_moins_chers.loc[top5_moins_chers["Code departement"] == i,"Département"] = departement.get(str(i))
+    
+    top5_chers = top5_chers.drop(columns="Code departement")
+    top5_moins_chers = top5_moins_chers.drop(columns="Code departement")
+    cher = build_table(top5_chers, 'red_light')
+    moinscher = build_table(top5_moins_chers, 'green_light')
+    html_table = f'<div class="flex"><div>{cher}</div><div>{moinscher}</div></div>'
+    return HttpResponse(html_table)
 
 
 def vol_monetaire(request,df):
@@ -76,9 +84,6 @@ def prix_m2(request,df):
     df['Valeur fonciere par m2'] = df['Valeur fonciere'] / df['Surface terrain']
     prix_m2_departement = df.groupby('Code departement')['Valeur fonciere par m2'].mean()
     return prix_m2_departement
-
-    prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
-    return prix_metre_carre
 
 def heat_map(request,df):
 
@@ -190,7 +195,7 @@ def nb_ventes_par_mois(request,data):
     graph fixe"""
     df = pd.DataFrame(data)
     df["Date mutation"] =pd.to_datetime(df['Date mutation'],dayfirst=True).dt.strftime('%y-%m')
-    plt.figure(figsize=(20,10))
+    plt.figure(figsize=(8,3))
     plt.title('Nombre de ventes répartis par mois')
     plt.plot(df["Date mutation"].value_counts()[df['Date mutation'].unique()])
     plt.xticks(rotation=45)
@@ -242,15 +247,39 @@ def graph_dynamique_valfonciere(request,data):
     dth = '#ff2e63' 
     rec = '#21bf73'
     cnf  = '#fe9801'
-    carrez = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
-    carrez["carrez_sum"] = data["Surface Carrez du 1er lot"].fillna(0)  +  data["Surface Carrez du 2eme lot"].fillna(0) + data["Surface Carrez du 3eme lot"].fillna(0) + data["Surface Carrez du 4eme lot"].fillna(0) + data["Surface Carrez du 5eme lot"].fillna(0)
-    carrez["Prix mètre carré"] = np.where(carrez["carrez_sum"] != 0,carrez["Valeur fonciere"]/carrez["carrez_sum"],carrez["Valeur fonciere"]/carrez["Surface reelle bati"])
-    carrez = carrez.drop(np.where(carrez['Prix mètre carré'] > 25000)[0])
+    temp = data.copy()
+    temp = temp[(temp["Type local"] != "Dépendance") & (temp["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    temp['Prix mètre carré'] = temp['Valeur fonciere']/temp['Surface reelle bati']
+    temp['Region'] = temp.apply(location, axis=1)
+    temp = temp.groupby('Region')['Prix mètre carré'].mean().reset_index()
+    temp = temp.melt(id_vars='Region', value_vars=['Prix mètre carré'], 
+                    var_name='Case', value_name='Count').sort_values('Count')
+    temp.head()
+    fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
+                text='Count', title='Paris - Nord - Alpes-Maritimes', 
+                color_discrete_sequence= [dth, rec, cnf])
+    fig.update_traces(textposition='outside')
+    #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+    fig_html = plotly.io.to_html(fig)
+    return HttpResponse(fig_html)
 
-    
+def graph_dynamique_m2(request,data):
+    dth = '#ff2e63' 
+    rec = '#21bf73'
+    cnf  = '#fe9801'
+    def location(row):
+        if row['Code departement']=='75':
+                return 'Paris'
+        elif row['Code departement']=='6':
+                return 'Alpes-Maritimes'
+        elif row['Code departement']=='59':
+            return 'Nord'
+        else:
+            return 'Reste de la France'
 
 
-    temp = carrez.copy()
+    temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    temp['Prix mètre carré'] = temp['Valeur fonciere']/temp['Surface reelle bati']
     temp['Region'] = temp.apply(location, axis=1)
     temp['Date'] = pd.to_datetime(temp['Date mutation']).dt.strftime('%Y-%m-%d')
     temp = temp.groupby(['Region', 'Date'])['Prix mètre carré'].mean().reset_index()
@@ -260,30 +289,109 @@ def graph_dynamique_valfonciere(request,data):
     temp.head()
 
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='Hubei - China - World', animation_frame='Date',
-                color_discrete_sequence= [dth, rec, cnf], range_x=[0, 15000])
-    fig.update_traces(textposition='outside')
-    # fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
-    # fig.update_layout(yaxis={'categoryorder':'array', 
-    #                          'categoryarray':['Hubei','Other Chinese Provinces','Rest of the World']})
-    fig_html = plotly.io.to_html(fig)
-    return HttpResponse(fig_html)
-
-def graph_dynamique_carrez(request,carrez):
-    cnf = '#393e46'
-    temp = carrez.copy()
-    carrez["carrez_sum"] = carrez["Surface Carrez du 1er lot"].fillna(0)  +  carrez["Surface Carrez du 2eme lot"].fillna(0) + carrez["Surface Carrez du 3eme lot"].fillna(0) + carrez["Surface Carrez du 4eme lot"].fillna(0) + carrez["Surface Carrez du 5eme lot"].fillna(0)
-    temp["Prix mètre carré"] = np.where(carrez["carrez_sum"] != 0,carrez["Valeur fonciere"]/carrez["carrez_sum"],carrez["Valeur fonciere"]/carrez["Surface reelle bati"])
-    temp['Region'] = temp.apply(location, axis=1)
-    temp = temp.groupby('Region')['Prix mètre carré'].mean().reset_index()
-    temp = temp.melt(id_vars='Region', value_vars=['Prix mètre carré'], 
-                    var_name='Case', value_name='Count').sort_values('Count')
-
-    fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='Paris - Nord - Alpes-Maritimes', 
-                color_discrete_sequence= [cnf])
+                text='Count', title='moyenne prix m^2', animation_frame='Date',
+                color_discrete_sequence= [dth, rec, cnf], range_x=[0, 70000])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
 
+def Heat_Map2(request,data):
+    m_2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    m_2["Prix mètre carré"] = m_2["Valeur fonciere"]/m_2["Surface reelle bati"]
+    property_changes = m_2.groupby('Code departement',as_index=False)['Prix mètre carré'].mean()
+    print(property_changes.sort_values("Prix mètre carré"))
+    property_changes.columns = ['Code', 'property_changes']
+    property_dict = property_changes.set_index('Code')['property_changes'].to_dict()
+    with open('./data/departements/departements.geojson') as f:
+        zone = json.load(f)
+
+    colormap = linear.YlOrRd_09.scale(
+        0,
+        property_changes.property_changes.max())
+
+    for feature in zone['features']:
+        feature['properties']['property_changes'] = property_dict.get(feature['properties']['code'], None)
+
+    def style_function(feature):
+        property_changes = feature['properties']['property_changes']
+        return {
+            'fillOpacity': 0.7,
+            'weight': 2,
+            'color': 'black',
+            'fillColor': '#fff' if property_changes is None else colormap(property_changes)
+        }
+
+    m = folium.Map(location=[46.8566, 2.3522], zoom_start=6)
+
+    folium.GeoJson(
+        zone,
+        style_function=style_function,
+        name='geojson'
+    ).add_to(m)
+
+    colormap.add_to(m)
+
+    return HttpResponse(m._repr_html_())
+
+def heat_map3(request,data):
+    m2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    m2["carrez_sum"] = m2["Surface Carrez du 1er lot"].fillna(0)  +  m2["Surface Carrez du 2eme lot"].fillna(0) + m2["Surface Carrez du 3eme lot"].fillna(0) + m2["Surface Carrez du 4eme lot"].fillna(0) + m2["Surface Carrez du 5eme lot"].fillna(0)
+    m2["Prix mètre carré"] = np.where(m2["carrez_sum"] != 0,m2["Valeur fonciere"]/m2["carrez_sum"],m2["Valeur fonciere"]/m2["Surface reelle bati"])
+    m2 = m2.drop(np.where(m2['Prix mètre carré'] > 25000)[0])
+    property_changes = m2.groupby('Code departement',as_index=False)['Prix mètre carré'].mean()
+
+    property_changes.columns = ['Code', 'property_changes']
+
+    property_dict = property_changes.set_index('Code')['property_changes'].to_dict()
+
+    with open('./data/departements/departements.geojson') as f:
+        zone = json.load(f)
+
+    colormap = linear.YlOrRd_09.scale(
+        0,
+        property_changes.property_changes.max())
+
+    for feature in zone['features']:
+        feature['properties']['property_changes'] = property_dict.get(feature['properties']['code'], None)
+
+    def style_function(feature):
+        property_changes = feature['properties']['property_changes']
+        return {
+            'fillOpacity': 0.7,
+            'weight': 2,
+            'color': 'black',
+            'fillColor': '#fff' if property_changes is None else colormap(property_changes)
+        }
+
+    m = folium.Map(location=[46.8566, 2.3522], zoom_start=6)
+
+    folium.GeoJson(
+        zone,
+        style_function=style_function,
+        name='geojson'
+    ).add_to(m)
+
+    colormap.add_to(m)
+    return HttpResponse(m._repr_html_())
+
+def Nb_piece(request,data):
+    act = '#fe9801'
+    temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    temp = temp.groupby(['Code departement'])['Nombre pieces principales'].mean().reset_index()
+    temp.columns = ["Code departement","Nombre pieces principales"]
+    temp["Nombre pieces principales"] = round(temp["Nombre pieces principales"],1)
+    departements = json.load(open("./data/departements/departements_dict.json"))
+    for i in temp["Code departement"]:
+        temp.loc[temp["Code departement"] == i,"Département"] = departements.get(str(i))
+        
+    temp
+
+    temp = temp.sort_values('Code departement', ascending=False)
+
+    fig = px.bar(temp.sort_values('Nombre pieces principales', ascending=False).head(10).sort_values('Nombre pieces principales', ascending=True), 
+                x="Nombre pieces principales", y="Code departement", text='Nombre pieces principales', orientation='h', 
+                width=700, height=600, range_x = [0, 7], title='Nombre de piece moyen par departement')
+    fig.update_traces(marker_color=act, opacity=0.8, textposition='outside')
+    fig_html = plotly.io.to_html(fig)
+    return HttpResponse(fig_html)

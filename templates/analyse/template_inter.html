@@ -124,11 +124,20 @@
 
 
       function loadAllGraph(filters) {
+        loadGraph('#loading_graph_dynamique_m2', '#content_graph_dynamique_m2', '#graph_graph_dynamique_m2', 'graph_dynamique_m2', filters);
+        loadGraph('#loading_vol_monetaire', '#content_vol_monetaire', '#graph_vol_monetaire', 'vol_monetaire', filters);
+        loadGraph('#loading_repartition_type_bien', '#content_repartition_type_bien', '#graph_repartition_type_bien', 'repartition_type_bien', filters);
+        loadGraph('#loading_nb_ventes', '#content_nb_ventes', '#graph_nb_ventes', 'nb_ventes', filters);
+        loadGraph('#loading_nb_ventes_par_mois', '#content_nb_ventes_par_mois', '#graph_nb_ventes_par_mois', 'nb_ventes_par_mois', filters);
         loadGraph('#loading_graph_dynamique_valfonciere', '#content_graph_dynamique_valfonciere', '#graph_graph_dynamique_valfonciere', 'graph_dynamique_valfonciere', filters);
-        // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
-        // loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
-        // loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
-        // loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+        loadGraph('#loading_top_5', '#content_top_5', '#graph_top_5', 'top_5', filters);
+        loadGraph('#loading_heat_map', '#content_heat_map', '#graph_heat_map', 'heat_map', filters);
+        loadGraph("#loading_Heat_Map2", "#content_Heat_Map2", "#graph_Heat_Map2", "Heat_Map2", filters);
+        loadGraph("#loading_heat_map3", "#content_heat_map3", "#graph_heat_map3", "heat_map3", filters);
+        loadGraph("#loading_Nb_piece", "#content_Nb_piece", "#graph_Nb_piece", "Nb_piece", filters);
+        loadGraph("#loading_evo_m_Carrez", "#content_evo_m_Carrez", "#graph_evo_m_Carrez", "evo_m_Carrez", filters);
+        loadGraph("#loading_evo_m2", "#content_evo_m2", "#graph_evo_m2", "evo_m2", filters);
+
       }
 
       loadAllGraph();
@@ -292,74 +301,155 @@
     </form>
 
 
+    evo_m_Carrez
+    <div id="loading_evo_m_Carrez" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_evo_m_Carrez" class="content" style="display: none;">
+      <div id="graph_evo_m_Carrez">
+        <h2>evo_m_Carrez</h2>
+      </div>
+    </div>
+
+    evo_m2
+    <div id="loading_evo_m2" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_evo_m2" class="content" style="display: none;">
+      <div id="graph_evo_m2">
+        <h2>evo_m2</h2>
+      </div>
+    </div>
+
+    repartion_type_bien
+    <div id="loading_repartition_type_bien" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_repartition_type_bien" class="content" style="display: none;">
+      <div id="graph_repartition_type_bien">
+        <h2>repartion_type_bien</h2>
+      </div>
+    </div>
+
+    nb_vente
+    <div id="loading_nb_ventes" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_nb_ventes" class="content" style="display: none;">
+      <div id="graph_nb_ventes">
+        <h2>nb_vente</h2>
+      </div>
+    </div>
+
+    top_5
+    <div id="loading_top_5" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_top_5" class="content" style="display: none;">
+      <div id="graph_top_5">
+        <h2>top_5</h2>
+      </div>
+    </div>
+
+    vol_monetaire
+    <div id="loading_vol_monetaire" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_vol_monetaire" class="content" style="display: none;">
+      <div id="graph_vol_monetaire">
+        <h2>vol_monetaire</h2>
+      </div>
+    </div>
 
     graph_dynamique_valfonciere
     <div id="loading_graph_dynamique_valfonciere" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
     <div id="content_graph_dynamique_valfonciere" class="content" style="display: none;">
       <div id="graph_graph_dynamique_valfonciere">
         <h2>graph_dynamique_valfonciere</h2>
       </div>
     </div>
 
-    <!-- vente_par_mois
-    <div id="loading_vente_par_mois" class="loading" style="display: none;">
+    graph_dynamique_m2
+    <div id="loading_graph_dynamique_m2" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
-    <div id="content_vente_par_mois" class="content" style="display: none;">
-      <div id="graph_vente_par_mois">
-        <h2>vente_par_mois</h2>
+    <div id="content_graph_dynamique_m2" class="content" style="display: none;">
+      <div id="graph_graph_dynamique_m2">
+        <h2>graph_dynamique_m2</h2>
       </div>
     </div>
 
-
-    repartion_type_bien
-    <div id="loading_repartion_type_bien" class="loading" style="display: none;">
+    heat_map
+    <div id="loading_heat_map" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
-    <div id="content_repartion_type_bien" class="content" style="display: none;">
-      <div id="graph_repartion_type_bien">
-        <h2>repartion_type_bien</h2>
+    <div id="content_heat_map" class="content" style="display: none;">
+      <div id="graph_heat_map">
+        <h2>heat_map</h2>
       </div>
     </div>
 
-    top_5_cher
-    <div id="loading_top_5_cher" class="loading" style="display: none;">
+    Heat_Map2
+    <div id="loading_Heat_Map2" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
-    <div id="content_top_5_cher" class="content" style="display: none;">
-      <div id="graph_top_5_cher">
-        <h2>top_5_cher</h2>
+    <div id="content_Heat_Map2" class="content" style="display: none;">
+      <div id="graph_Heat_Map2">
+        <h2>Heat_Map2</h2>
       </div>
     </div>
 
-    top_5_moins_cher
-    <div id="loading_top_5_moins_cher" class="loading" style="display: none;">
+    heat_map3
+    <div id="loading_heat_map3" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
-    <div id="content_top_5_moins_cher" class="content" style="display: none;">
-      <div id="graph_top_5_moins_cher">
-        <h2>top_5_moins_cher</h2>
+    <div id="content_heat_map3" class="content" style="display: none;">
+      <div id="graph_heat_map3">
+        <h2>heat_map3</h2>
       </div>
     </div>
 
-    heatMap
-
-    <div id="loading_heatmap" class="loading" style="display: none;">
+    nb_ventes_par_mois
+    <div id="loading_nb_ventes_par_mois" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
-
-    <div id="content_heatmap" class="content" style="display: none;">
-      <div id="heatmap_container">
-        <h2>Heatmap</h2>
+    <div id="content_nb_ventes_par_mois" class="content" style="display: none;">
+      <div id="graph_nb_ventes_par_mois">
+        <h2>nb_ventes_par_mois</h2>
       </div>
-    </div> -->
+    </div>
+
+    Nb_piece
+    <div id="loading_Nb_piece" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_Nb_piece" class="content" style="display: none;">
+      <div id="graph_Nb_piece">
+        <h2>Nb_piece</h2>
+      </div>
+    </div>
+
+    Nb_piece
+    <div id="loading_Nb_piece" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_Nb_piece" class="content" style="display: none;">
+      <div id="graph_Nb_piece">
+        <h2>Nb_piece</h2>
+      </div>
+    </div>
+
+    Nb_piece
+    <div id="loading_Nb_piece" class="loading" style="display: none;">
+      <h2>Loading...</h2>
+    </div>
+    <div id="content_Nb_piece" class="content" style="display: none;">
+      <div id="graph_Nb_piece">
+        <h2>Nb_piece</h2>
+      </div>
+    </div>
 
 
     <!-- template-->
