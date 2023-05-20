@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## Exécution du code
 
-Pour lancer le server, il faut exécuter le fichier `mange.py` avec la commande suivante:
+Pour lancer le server, il faut exécuter le fichier `manage.py` avec la commande suivante:
 
 ```bash
 python manage.py runserver
