@@ -334,7 +334,7 @@ def Heat_Map2(request,data):
 
     return HttpResponse(m._repr_html_())
 
-def heat_map3(request,data):
+def Surface_Carrez(request,data):
     m2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
     m2["carrez_sum"] = m2["Surface Carrez du 1er lot"].fillna(0)  +  m2["Surface Carrez du 2eme lot"].fillna(0) + m2["Surface Carrez du 3eme lot"].fillna(0) + m2["Surface Carrez du 4eme lot"].fillna(0) + m2["Surface Carrez du 5eme lot"].fillna(0)
     m2["Prix mètre carré"] = np.where(m2["carrez_sum"] != 0,m2["Valeur fonciere"]/m2["carrez_sum"],m2["Valeur fonciere"]/m2["Surface reelle bati"])

@@ -152,8 +152,8 @@ def get_graph(request, type, annee, graph):
             return graph_dynamique_m2(request, dfTemp)
         elif graph == "Nb_piece":
             return Nb_piece(request, dfTemp)
-        elif graph == "heat_map3":
-            return heat_map3(request, dfTemp)
+        elif graph == "Surface_Carrez":
+            return Surface_Carrez(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 
