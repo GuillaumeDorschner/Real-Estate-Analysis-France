@@ -28,8 +28,10 @@ def repartition_type_bien(request,df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
-    ax.axis('off')
     ax.set_title('Répartition des types de biens')
+    plt.grid(False)
+    ax.set_ylabel('')
+    plt.axis('off')
     html_fig = mpld3.fig_to_html(fig)
     fig.clear()
     return HttpResponse(html_fig)
@@ -171,14 +173,15 @@ def evo_m2(request,data):
     act = '#fe9801'
     temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
     temp["Month mutation"] = pd.to_datetime(temp["Date mutation"]).dt.month
-
-    temp['Prix mètre carré 2018'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Prix mètre carré"]
-    temp['Prix mètre carré 2019'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Prix mètre carré"]
-    temp['Prix mètre carré 2022'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Prix mètre carré"]
+    temp['Prix mètre carré 2018'] = np.nan
+    temp['Prix mètre carré 2019'] = np.nan
+    temp['Prix mètre carré 2022'] = np.nan
+    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2018, 'Prix mètre carré 2018'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
+    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2019, 'Prix mètre carré 2019'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
+    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2022, 'Prix mètre carré 2022'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
 
     temp =temp.replace(np.inf, np.nan)
 
-    # temp['No. of Recovered to 1 Death Case'] = round(temp['Recovered']/temp['Deaths'], 3)
     temp = temp.groupby('Month mutation')["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"].mean().reset_index()
 
     temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
@@ -189,6 +192,7 @@ def evo_m2(request,data):
     retour = plotly.io.to_html(fig)
     plt.close()
     return HttpResponse(retour)
+
 
 def nb_ventes_par_mois(request,data):
     """Nombre de ventes par mois
