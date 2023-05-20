@@ -77,7 +77,7 @@ def analyse(request):
     template = loader.get_template("analyse/index.html")
     return HttpResponse(template.render(context, request))
 
-def analyse_intra(request, annee):
+def analyse_intra(request, annee:int):
 
     context = {
         "annee": annee,
@@ -105,34 +105,52 @@ def get_graph(request, type, annee, graph):
 
     if type == "inter":
         dfTemp = {}
-        for annee, df_year in df.items():
-            dfTemp[annee] = filter_df(df_year, filters)
 
-        if graph == "graph_dynamique1":
-            return graph_dynamique1(request, dfTemp)
-        elif graph == "graph_dynamique2":
-            return graoh_dynamique2(request, dfTemp)
-        elif graph == "evo_m_Carrez":
-            return evo_m_Carrez(request, dfTemp)
+        df_all_years = pd.concat(df.values(), ignore_index=True)
+
+        dfTemp = filter_df(df_all_years, filters)
+
+        if graph =="top_5":
+            return top_5(request, dfTemp)
+        if graph =="repartition_type_bien":
+            return repartition_type_bien(request, dfTemp)
+        elif graph =="vol_monetaire":
+            return vol_monetaire(request, dfTemp)
+        elif graph == "heat_map":
+            return heat_map(request, dfTemp)
+        elif graph == "nb_ventes":
+            return nb_ventes(request, dfTemp)
         elif graph == "evo_m2":
             return evo_m2(request, dfTemp)
+        elif graph =="nb_ventes_par_mois":
+            return nb_ventes_par_mois(request, dfTemp)
+        elif graph == "evo_m_Carrez":
+            return evo_m_Carrez(request, dfTemp)
+        elif graph== "graph_dynamique_valfonciere":
+            return graph_dynamique_valfonciere(request, dfTemp)
+        elif graph=="graph_dynamique_carrez":
+            return graph_dynamique_carrez(request, dfTemp)
 
     else:
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
 
-        if graph == "repartion_type_bien":
-            return repartion_type_bien(request, dfTemp)
-        elif graph == "top_5":
+        if graph =="top_5":
             return top_5(request, dfTemp)
-        elif graph == "vol_monetaire":
+        if graph =="repartition_type_bien":
+            return repartition_type_bien(request, dfTemp)
+        elif graph =="vol_monetaire":
             return vol_monetaire(request, dfTemp)
-        elif graph == "prix_m2":
-            return prix_m2(request, dfTemp)
         elif graph == "heat_map":
             return heat_map(request, dfTemp)
-        elif graph == "nb_ventes_par_mois":
+        elif graph == "nb_ventes":
+            return nb_ventes(request, dfTemp)
+        elif graph =="nb_ventes_par_mois":
             return nb_ventes_par_mois(request, dfTemp)
+        elif graph== "graph_dynamique_valfonciere":
+            return graph_dynamique_valfonciere(request, dfTemp)
+        elif graph=="graph_dynamique_carrez":
+            return graph_dynamique_carrez(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 
