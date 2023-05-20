@@ -105,8 +105,10 @@ def get_graph(request, type, annee, graph):
 
     if type == "inter":
         dfTemp = {}
-        for annee, df_year in df.items():
-            dfTemp[annee] = filter_df(df_year, filters)
+
+        df_all_years = pd.concat(df.values(), ignore_index=True)
+
+        dfTemp = filter_df(df_all_years, filters)
 
         #if graph =="top_5":
         #    return top_5(request, dfTemp)
