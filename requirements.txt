@@ -1,5 +1,4 @@
 folium==0.14.0
-json==0.9.6
 colour==0.1.5
 Django==4.2.1
 matplotlib==3.7.1
