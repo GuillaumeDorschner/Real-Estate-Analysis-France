@@ -110,8 +110,8 @@ def get_graph(request, type, annee, graph):
 
         dfTemp = filter_df(df_all_years, filters)
 
-        #if graph =="top_5":
-        #    return top_5(request, dfTemp)
+        if graph =="top_5":
+            return top_5(request, dfTemp)
         if graph =="repartition_type_bien":
             return repartition_type_bien(request, dfTemp)
         elif graph =="vol_monetaire":
@@ -135,8 +135,8 @@ def get_graph(request, type, annee, graph):
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
 
-        #if graph =="top_5":
-        #    return top_5(request, dfTemp)
+        if graph =="top_5":
+            return top_5(request, dfTemp)
         if graph =="repartition_type_bien":
             return repartition_type_bien(request, dfTemp)
         elif graph =="vol_monetaire":

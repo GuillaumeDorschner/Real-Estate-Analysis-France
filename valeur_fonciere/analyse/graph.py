@@ -30,7 +30,6 @@ def repartition_type_bien(request,df):
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
     ax.set_ylabel('')
     ax.set_title('Répartition des types de biens')
-
     html_fig = mpld3.fig_to_html(fig)
     plt.close(fig)
 
@@ -47,12 +46,9 @@ def top_5(request,data):
     retour = top5_moins_chers.style.background_gradient(cmap='Greens').to_html()
     fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
     ax.axis('off')
-    cher = top5_chers.to_html()
-    moins_cher = top5_moins_chers.to_html()
-    html_table = build_table(cher, 'blue_light', font_size='large', font_family='Arial')
-    html_table+= build_table(moins_cher, 'blue_light', font_size='large', font_family='Arial')
-    pd.io.formats.style.Styler(top5_chers, background_gradient='Greens').to_html()
-    return retour
+    html_table = build_table(top5_chers, 'blue_light', font_size='large', font_family='Arial')
+    html_table+= build_table(top5_moins_chers, 'blue_light', font_size='large', font_family='Arial')
+    return html_table
 
 
 def vol_monetaire(request,df):
@@ -122,7 +118,7 @@ def heat_map(request,df):
 
     return HttpResponse(m._repr_html_())
 
-def nb_ventes(df):
+def nb_ventes(request,df):
     """Nombre de ventes par département
     graph fixe"""
     dict_nb_ventes = pd.DataFrame(df["Code departement"].value_counts()).reset_index()
@@ -276,13 +272,12 @@ def graph_dynamique_valfonciere(request,data):
 def graph_dynamique_carrez(request,carrez):
     cnf = '#393e46'
     temp = carrez.copy()
-    temp["carrez_sum"] = temp["Surface Carrez du 1er lot"].fillna(0)  +  temp["Surface Carrez du 2eme lot"].fillna(0) + temp["Surface Carrez du 3eme lot"].fillna(0) + temp["Surface Carrez du 4eme lot"].fillna(0) + temp["Surface Carrez du 5eme lot"].fillna(0)
+    carrez["carrez_sum"] = carrez["Surface Carrez du 1er lot"].fillna(0)  +  carrez["Surface Carrez du 2eme lot"].fillna(0) + carrez["Surface Carrez du 3eme lot"].fillna(0) + carrez["Surface Carrez du 4eme lot"].fillna(0) + carrez["Surface Carrez du 5eme lot"].fillna(0)
     temp["Prix mètre carré"] = np.where(carrez["carrez_sum"] != 0,carrez["Valeur fonciere"]/carrez["carrez_sum"],carrez["Valeur fonciere"]/carrez["Surface reelle bati"])
     temp['Region'] = temp.apply(location, axis=1)
     temp = temp.groupby('Region')['Prix mètre carré'].mean().reset_index()
     temp = temp.melt(id_vars='Region', value_vars=['Prix mètre carré'], 
                     var_name='Case', value_name='Count').sort_values('Count')
-    temp.head()
 
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
                 text='Count', title='Paris - Nord - Alpes-Maritimes', 
@@ -292,5 +287,3 @@ def graph_dynamique_carrez(request,carrez):
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
 
-
-print(nb_ventes(pd.read_csv("./data/annee_traitee/2022.csv", sep=",", low_memory=False)))
