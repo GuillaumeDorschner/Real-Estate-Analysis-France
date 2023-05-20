@@ -128,15 +128,14 @@ def get_graph(request, type, annee, graph):
             return evo_m_Carrez(request, dfTemp)
         elif graph== "graph_dynamique_valfonciere":
             return graph_dynamique_valfonciere(request, dfTemp)
-        elif graph=="graph_dynamique_carrez":
-            return graph_dynamique_carrez(request, dfTemp)
+        elif graph=="graph_dynamique_m2":
+            return graph_dynamique_m2(request, dfTemp)
 
     else:
         dfTemp = df[annee]
         dfTemp = filter_df(dfTemp, filters)
-
         if graph =="top_5":
-            return top_5(request, dfTemp)
+            return top_5(request,dfTemp)
         if graph =="repartition_type_bien":
             return repartition_type_bien(request, dfTemp)
         elif graph =="vol_monetaire":
@@ -149,8 +148,12 @@ def get_graph(request, type, annee, graph):
             return nb_ventes_par_mois(request, dfTemp)
         elif graph== "graph_dynamique_valfonciere":
             return graph_dynamique_valfonciere(request, dfTemp)
-        elif graph=="graph_dynamique_carrez":
-            return graph_dynamique_carrez(request, dfTemp)
+        elif graph=="graph_dynamique_m2":
+            return graph_dynamique_m2(request, dfTemp)
+        elif graph == "Nb_piece":
+            return Nb_piece(request, dfTemp)
+        elif graph == "heat_map3":
+            return heat_map3(request, dfTemp)
         else:
             raise Http404("Graph does not exist")
 
