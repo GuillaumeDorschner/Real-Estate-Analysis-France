@@ -36,18 +36,26 @@ def repartition_type_bien(request,df):
 
 def top_5(request,data):
     """top 5 des départements les plus chers"""
-    m2 = pd.DataFrame(data)
-    m2['Valeur fonciere par m2'] = m2['Valeur fonciere'] / m2['Surface terrain']
-    prix_m2_departement = m2.groupby('Code departement')['Valeur fonciere par m2'].mean()
-    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
-    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
-    top5_chers.style.background_gradient(cmap='Reds')
-    fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
-    ax.axis('off')
-    cher = build_table(top5_chers, 'red_light', font_size='large', font_family='Arial')
-    moins_cher= build_table(top5_moins_chers, 'blue_light', font_size='large', font_family='Arial')
-    fig.clear()
-    html_table = f'<div class="flex"><div>{cher}</div><div>{moins_cher}</div></div>'
+    departement = json.load(open("./data/departements/departements_dict.json"))
+    m2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
+    print(m2['Code departement'].nunique())
+    m2["carrez_sum"] = m2["Surface Carrez du 1er lot"].fillna(0)  +  m2["Surface Carrez du 2eme lot"].fillna(0) + m2["Surface Carrez du 3eme lot"].fillna(0) + m2["Surface Carrez du 4eme lot"].fillna(0) + m2["Surface Carrez du 5eme lot"].fillna(0)
+    m2["Prix mètre carré"] = np.where(m2["carrez_sum"] != 0,m2["Valeur fonciere"]/m2["carrez_sum"],m2["Valeur fonciere"]/m2["Surface reelle bati"])
+    m2 = m2.drop(np.where(m2['Prix mètre carré'] > 25000)[0])
+    prix_m2_departement = m2.groupby('Code departement',as_index=False)['Prix mètre carré'].mean()
+    top5_chers = pd.DataFrame(prix_m2_departement.sort_values(by="Prix mètre carré",ascending=False).head(5))
+    for i in top5_chers["Code departement"]:
+        top5_chers.loc[top5_chers["Code departement"] == i,"Département"] = departement.get(str(i))
+    top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(by="Prix mètre carré",ascending=True).head(5))
+
+    for i in top5_moins_chers["Code departement"]:
+        top5_moins_chers.loc[top5_moins_chers["Code departement"] == i,"Département"] = departement.get(str(i))
+    
+    top5_chers = top5_chers.drop(columns="Code departement")
+    top5_moins_chers = top5_moins_chers.drop(columns="Code departement")
+    cher = build_table(top5_chers, 'red_light')
+    moinscher = build_table(top5_moins_chers, 'green_light')
+    html_table = f'<div class="flex"><div>{cher}</div><div>{moinscher}</div></div>'
     return HttpResponse(html_table)
 
 
@@ -281,11 +289,12 @@ def graph_dynamique_m2(request,data):
     temp.head()
 
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='Hubei - China - World', animation_frame='Date',
+                text='Count', title='moyenne prix m^2', animation_frame='Date',
                 color_discrete_sequence= [dth, rec, cnf], range_x=[0, 70000])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
     fig_html = plotly.io.to_html(fig)
+    return HttpResponse(fig_html)
 
 def Heat_Map2(request,data):
     m_2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
