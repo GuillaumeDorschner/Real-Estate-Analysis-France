@@ -125,10 +125,9 @@
 
       function loadAllGraph(filters) {
         loadGraph('#loading_graph_dynamique_valfonciere', '#content_graph_dynamique_valfonciere', '#graph_graph_dynamique_valfonciere', 'graph_dynamique_valfonciere', filters);
-        // loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
-        // loadGraph('#loading_top_5_cher', '#content_top_5_cher', '#graph_container1', 'top_5_cher', filters);
-        // loadGraph('#loading_top_5_moins_cher', '#content_top_5_moins_cher', '#graph_top_5_moins_cher', 'top_5_moins_cher', filters);
-        // loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
+        loadGraph('#loading_repartion_type_bien', '#content_repartion_type_bien', '#graph_repartion_type_bien', 'repartion_type_bien', filters);
+        loadGraph('#loading_top_5', '#content_top_5', '#graph_top_5', 'top_5', filters);
+        loadGraph('#loading_heatmap', '#content_heatmap', '#heatmap_container', 'heat_map', filters);
       }
 
       loadAllGraph();
@@ -304,7 +303,7 @@
       </div>
     </div>
 
-    <!-- vente_par_mois
+    vente_par_mois
     <div id="loading_vente_par_mois" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
@@ -327,27 +326,18 @@
       </div>
     </div>
 
-    top_5_cher
-    <div id="loading_top_5_cher" class="loading" style="display: none;">
+    top_5
+    <div id="loading_top_5" class="loading" style="display: none;">
       <h2>Loading...</h2>
     </div>
 
-    <div id="content_top_5_cher" class="content" style="display: none;">
-      <div id="graph_top_5_cher">
-        <h2>top_5_cher</h2>
+    <div id="content_top_5" class="content" style="display: none;">
+      <div id="graph_top_5">
+        <h2>top_5</h2>
       </div>
     </div>
 
-    top_5_moins_cher
-    <div id="loading_top_5_moins_cher" class="loading" style="display: none;">
-      <h2>Loading...</h2>
-    </div>
-
-    <div id="content_top_5_moins_cher" class="content" style="display: none;">
-      <div id="graph_top_5_moins_cher">
-        <h2>top_5_moins_cher</h2>
-      </div>
-    </div>
+   
 
     heatMap
 
@@ -359,7 +349,7 @@
       <div id="heatmap_container">
         <h2>Heatmap</h2>
       </div>
-    </div> -->
+    </div>
 
 
     <!-- template-->
