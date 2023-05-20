@@ -1,21 +1,15 @@
 import folium
 import json
-import random
 import matplotlib.pyplot as plt
 import base64
 import mpld3
 import matplotlib.colors as mcolors
 import plotly
-from io import StringIO
 import pandas as pd
 import numpy as np
 import plotly.subplots as sp
 import plotly.graph_objects as go
-from io import BytesIO
-from colour import Color
 import matplotlib
-from django.http import JsonResponse
-from django.http import FileResponse
 from branca.colormap import linear
 from django.http import HttpResponse
 matplotlib.use('Agg')
@@ -28,10 +22,13 @@ def repartition_type_bien(request,df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
+    plt.grid(False)
     ax.set_ylabel('')
+    plt.axis('off')
     ax.set_title('Répartition des types de biens')
     html_fig = mpld3.fig_to_html(fig)
     fig.clear()
+    plt.close()
     return HttpResponse(html_fig)
 
 def top_5(request,data):
@@ -158,9 +155,9 @@ def nb_ventes(request,df):
 
     fig.update_layout(showlegend=False)
 
-    fig.update_xaxes(range=[50000, 110000], row=1, col=1)
+    #fig.update_xaxes(range=[50000, 110000], row=1, col=1)
 
-    fig.update_xaxes(range=[1000, 4000], row=1, col=2)
+    #fig.update_xaxes(range=[1000, 4000], row=1, col=2)
     
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
@@ -171,21 +168,19 @@ def evo_m2(request,data):
     act = '#fe9801'
     temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
     temp["Month mutation"] = pd.to_datetime(temp["Date mutation"]).dt.month
-
-    temp['Prix mètre carré Paris 2018'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2018)]["Valeur fonciere"]/temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2018)]["Surface reelle bati"]
-    temp['Prix mètre carré Paris 2019'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2019)]["Valeur fonciere"]/temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2019)]["Surface reelle bati"]
-    temp['Prix mètre carré Paris 2022'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2022)]["Valeur fonciere"]/temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2022)]["Surface reelle bati"]
+    temp['Prix mètre carré 2018'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Surface reelle bati"]
+    temp['Prix mètre carré 2019'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Surface reelle bati"]
+    temp['Prix mètre carré 2022'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Surface reelle bati"]
 
     temp =temp.replace(np.inf, np.nan)
 
     # temp['No. of Recovered to 1 Death Case'] = round(temp['Recovered']/temp['Deaths'], 3)
-    temp = temp.groupby('Month mutation')["Prix mètre carré Paris 2018","Prix mètre carré Paris 2019","Prix mètre carré Paris 2022"].mean().reset_index()
+    temp = temp.groupby('Month mutation')[["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"]].mean().reset_index()
 
-    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré Paris 2018','Prix mètre carré Paris 2019','Prix mètre carré Paris 2022'], 
+    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
                     var_name='Departements', value_name='Value')
 
-    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
-                title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
+    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, color_discrete_sequence=[dth, rec,act])
     retour = plotly.io.to_html(fig)
     plt.close()
     return HttpResponse(retour)
@@ -227,8 +222,7 @@ def evo_m_Carrez (request,df):
     temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré Paris 2018','Prix mètre carré Paris 2019','Prix mètre carré Paris 2022'], 
                     var_name='Departements', value_name='Value')
 
-    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
-                title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
+    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, color_discrete_sequence=[dth, rec,act])
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
 
@@ -256,7 +250,7 @@ def graph_dynamique_valfonciere(request,data):
                     var_name='Case', value_name='Count').sort_values('Count')
     temp.head()
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='Paris - Nord - Alpes-Maritimes', 
+                text='Count', 
                 color_discrete_sequence= [dth, rec, cnf])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
@@ -289,7 +283,7 @@ def graph_dynamique_m2(request,data):
     temp.head()
 
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='moyenne prix m^2', animation_frame='Date',
+                text='Count', animation_frame='Date',
                 color_discrete_sequence= [dth, rec, cnf], range_x=[0, 70000])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
@@ -334,7 +328,7 @@ def Heat_Map2(request,data):
 
     return HttpResponse(m._repr_html_())
 
-def heat_map3(request,data):
+def Surface_Carrez(request,data):
     m2 = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
     m2["carrez_sum"] = m2["Surface Carrez du 1er lot"].fillna(0)  +  m2["Surface Carrez du 2eme lot"].fillna(0) + m2["Surface Carrez du 3eme lot"].fillna(0) + m2["Surface Carrez du 4eme lot"].fillna(0) + m2["Surface Carrez du 5eme lot"].fillna(0)
     m2["Prix mètre carré"] = np.where(m2["carrez_sum"] != 0,m2["Valeur fonciere"]/m2["carrez_sum"],m2["Valeur fonciere"]/m2["Surface reelle bati"])
@@ -391,7 +385,7 @@ def Nb_piece(request,data):
 
     fig = px.bar(temp.sort_values('Nombre pieces principales', ascending=False).head(10).sort_values('Nombre pieces principales', ascending=True), 
                 x="Nombre pieces principales", y="Code departement", text='Nombre pieces principales', orientation='h', 
-                width=700, height=600, range_x = [0, 7], title='Nombre de piece moyen par departement')
+                width=700, height=600, range_x = [0, 7])
     fig.update_traces(marker_color=act, opacity=0.8, textposition='outside')
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
