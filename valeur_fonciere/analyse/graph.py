@@ -158,9 +158,9 @@ def nb_ventes(request,df):
 
     fig.update_layout(showlegend=False)
 
-    fig.update_xaxes(range=[50000, 110000], row=1, col=1)
+    #fig.update_xaxes(range=[50000, 110000], row=1, col=1)
 
-    fig.update_xaxes(range=[1000, 4000], row=1, col=2)
+    #fig.update_xaxes(range=[1000, 4000], row=1, col=2)
     
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
