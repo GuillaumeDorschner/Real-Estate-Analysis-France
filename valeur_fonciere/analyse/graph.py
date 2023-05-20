@@ -28,7 +28,7 @@ def repartition_type_bien(request,df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
-    ax.set_ylabel('')
+    ax.axis('off')
     ax.set_title('Répartition des types de biens')
     html_fig = mpld3.fig_to_html(fig)
     fig.clear()
