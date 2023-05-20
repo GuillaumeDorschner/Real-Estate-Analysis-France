@@ -46,10 +46,8 @@ def top_5(request,data):
     retour = top5_moins_chers.style.background_gradient(cmap='Greens').to_html()
     fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
     ax.axis('off')
-    cher = top5_chers.to_html()
-    moins_cher = top5_moins_chers.to_html()
-    html_table = build_table(cher, 'blue_light', font_size='large', font_family='Arial')
-    html_table+= build_table(moins_cher, 'blue_light', font_size='large', font_family='Arial')
+    html_table = build_table(top5_chers, 'blue_light', font_size='large', font_family='Arial')
+    html_table+= build_table(top5_moins_chers, 'blue_light', font_size='large', font_family='Arial')
     return html_table
 
 
