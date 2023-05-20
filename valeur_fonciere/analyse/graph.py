@@ -122,7 +122,7 @@ def heat_map(request,df):
 
     return HttpResponse(m._repr_html_())
 
-def nb_ventes(request,df):
+def nb_ventes(df):
     """Nombre de ventes par département
     graph fixe"""
     dict_nb_ventes = pd.DataFrame(df["Code departement"].value_counts()).reset_index()
@@ -256,7 +256,7 @@ def graph_dynamique_valfonciere(request,data):
 
     temp = carrez.copy()
     temp['Region'] = temp.apply(location, axis=1)
-    temp['Date'] = temp['Date mutation'].dt.strftime('%Y-%m-%d')
+    temp['Date'] = pd.to_datetime(temp['Date mutation']).dt.strftime('%Y-%m-%d')
     temp = temp.groupby(['Region', 'Date'])['Prix mètre carré'].mean().reset_index()
     temp = temp.melt(id_vars=['Region', 'Date'], value_vars=['Prix mètre carré'], 
                     var_name='Case', value_name='Count').sort_values('Count')
@@ -276,6 +276,7 @@ def graph_dynamique_valfonciere(request,data):
 def graph_dynamique_carrez(request,carrez):
     cnf = '#393e46'
     temp = carrez.copy()
+    temp["carrez_sum"] = temp["Surface Carrez du 1er lot"].fillna(0)  +  temp["Surface Carrez du 2eme lot"].fillna(0) + temp["Surface Carrez du 3eme lot"].fillna(0) + temp["Surface Carrez du 4eme lot"].fillna(0) + temp["Surface Carrez du 5eme lot"].fillna(0)
     temp["Prix mètre carré"] = np.where(carrez["carrez_sum"] != 0,carrez["Valeur fonciere"]/carrez["carrez_sum"],carrez["Valeur fonciere"]/carrez["Surface reelle bati"])
     temp['Region'] = temp.apply(location, axis=1)
     temp = temp.groupby('Region')['Prix mètre carré'].mean().reset_index()
@@ -292,3 +293,4 @@ def graph_dynamique_carrez(request,carrez):
     return HttpResponse(fig_html)
 
 
+print(nb_ventes(pd.read_csv("./data/annee_traitee/2022.csv", sep=",", low_memory=False)))
