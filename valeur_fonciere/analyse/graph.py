@@ -289,7 +289,7 @@ def graph_dynamique_m2(request,data):
     temp.head()
 
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='moyenne prix m^2', animation_frame='Date',
+                text='Count', animation_frame='Date',
                 color_discrete_sequence= [dth, rec, cnf], range_x=[0, 70000])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
