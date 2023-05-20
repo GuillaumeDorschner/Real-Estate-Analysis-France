@@ -5,3 +5,29 @@ Ce projet porte sur l'analyse des données des transactions immobilières interv
 # Objectif du projet
 
 L'objectif de ce travail est de réaliser une analyse détaillée des données, en se concentrant particulièrement sur l'année 2022. L'analyse devrait inclure au moins une vingtaine d'interprétations et de visualisations pertinentes, ainsi que cinq interprétations et visualisations comparant 2022 avec au moins une autre année, en particulier avant la pandémie de COVID.
+
+# Getting Started
+
+## Prérequis
+
+Pour pouvoir exécuter le code, il faut installer les packages suivants:
+
+```bash
+pip install pandas
+pip install numpy
+pip install matplotlib
+```
+
+## Exécution du code
+
+Pour lancer le server, il faut exécuter le fichier `mange.py` avec la commande suivante:
+
+```bash
+python manage.py runserver
+```
+
+# Auteurs
+
+- Louis Anne
+- Guillaume Dorschner
+- Valentin Grateau
