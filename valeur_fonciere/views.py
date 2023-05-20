@@ -152,8 +152,6 @@ def get_graph(request, type, annee, graph):
             return graph_dynamique_m2(request, dfTemp)
         elif graph == "Nb_piece":
             return Nb_piece(request, dfTemp)
-        elif graph =="Heat_Map2":
-            return Heat_Map2(request, dfTemp)
         elif graph == "heat_map3":
             return heat_map3(request, dfTemp)
         else:
