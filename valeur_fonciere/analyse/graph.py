@@ -43,12 +43,11 @@ def top_5(request,data):
     top5_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=False).head(5))
     top5_moins_chers = pd.DataFrame(prix_m2_departement.sort_values(ascending=True).head(5))
     top5_chers.style.background_gradient(cmap='Reds')
-    retour = top5_moins_chers.style.background_gradient(cmap='Greens').to_html()
     fig, ax = plt.subplots(figsize=(12, 4))  # Create a new figure with a default 111 subplot
     ax.axis('off')
-    html_table = build_table(top5_chers, 'blue_light', font_size='large', font_family='Arial')
+    html_table = build_table(top5_chers, 'red_light', font_size='large', font_family='Arial')
     html_table+= build_table(top5_moins_chers, 'blue_light', font_size='large', font_family='Arial')
-    return html_table
+    return HttpResponse(html_table)
 
 
 def vol_monetaire(request,df):
@@ -76,9 +75,6 @@ def prix_m2(request,df):
     df['Valeur fonciere par m2'] = df['Valeur fonciere'] / df['Surface terrain']
     prix_m2_departement = df.groupby('Code departement')['Valeur fonciere par m2'].mean()
     return prix_m2_departement
-
-    prix_metre_carre["Prix mètre carré"] = prix_metre_carre["Valeur fonciere"]/prix_metre_carre["Surface reelle bati"]
-    return prix_metre_carre
 
 def heat_map(request,df):
 
@@ -243,13 +239,9 @@ def graph_dynamique_valfonciere(request,data):
     rec = '#21bf73'
     cnf  = '#fe9801'
     carrez = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
-    carrez["carrez_sum"] = data["Surface Carrez du 1er lot"].fillna(0)  +  data["Surface Carrez du 2eme lot"].fillna(0) + data["Surface Carrez du 3eme lot"].fillna(0) + data["Surface Carrez du 4eme lot"].fillna(0) + data["Surface Carrez du 5eme lot"].fillna(0)
+    carrez["carrez_sum"] = data["Surface Carrez du 1er lot"].fillna(0)  +  data["Surface Carrez du 2eme lot"].fillna(0) + data["Surface Carrez du 3eme lot"].fillna(0) + data["Surface Carrez du 4eme lot"].fillna(0)
     carrez["Prix mètre carré"] = np.where(carrez["carrez_sum"] != 0,carrez["Valeur fonciere"]/carrez["carrez_sum"],carrez["Valeur fonciere"]/carrez["Surface reelle bati"])
     carrez = carrez.drop(np.where(carrez['Prix mètre carré'] > 25000)[0])
-
-    
-
-
     temp = carrez.copy()
     temp['Region'] = temp.apply(location, axis=1)
     temp['Date'] = pd.to_datetime(temp['Date mutation']).dt.strftime('%Y-%m-%d')
@@ -257,8 +249,6 @@ def graph_dynamique_valfonciere(request,data):
     temp = temp.melt(id_vars=['Region', 'Date'], value_vars=['Prix mètre carré'], 
                     var_name='Case', value_name='Count').sort_values('Count')
     # temp = temp.sort_values(['Date', 'Region', 'Case']).reset_index()
-    temp.head()
-
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
                 text='Count', title='Hubei - China - World', animation_frame='Date',
                 color_discrete_sequence= [dth, rec, cnf], range_x=[0, 15000])
