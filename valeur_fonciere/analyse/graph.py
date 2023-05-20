@@ -210,16 +210,16 @@ def evo_m_Carrez (request,df):
     temp["Prix mètre carré"] = np.where(temp["carrez_sum"] != 0,temp["Valeur fonciere"]/temp["carrez_sum"],temp["Valeur fonciere"]/temp["Surface reelle bati"])
     temp = temp.drop(np.where(temp['Prix mètre carré'] > 25000)[0])
 
-    temp['Prix mètre carré Paris 2018'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2018)]["Prix mètre carré"]
-    temp['Prix mètre carré Paris 2019'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2019)]["Prix mètre carré"]
-    temp['Prix mètre carré Paris 2022'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2022)]["Prix mètre carré"]
+    temp['Prix mètre carré 2018'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Surface reelle bati"]
+    temp['Prix mètre carré 2019'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Surface reelle bati"]
+    temp['Prix mètre carré 2022'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Surface reelle bati"]
 
     temp =temp.replace(np.inf, np.nan)
 
     # temp['No. of Recovered to 1 Death Case'] = round(temp['Recovered']/temp['Deaths'], 3)
-    temp = temp.groupby('Month mutation')["Prix mètre carré Paris 2018","Prix mètre carré Paris 2019","Prix mètre carré Paris 2022"].mean().reset_index()
+    temp = temp.groupby('Month mutation')["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"].mean().reset_index()
 
-    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré Paris 2018','Prix mètre carré Paris 2019','Prix mètre carré Paris 2022'], 
+    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
                     var_name='Departements', value_name='Value')
 
     fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, color_discrete_sequence=[dth, rec,act])
