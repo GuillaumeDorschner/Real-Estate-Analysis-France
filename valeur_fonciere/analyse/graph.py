@@ -1,21 +1,15 @@
 import folium
 import json
-import random
 import matplotlib.pyplot as plt
 import base64
 import mpld3
 import matplotlib.colors as mcolors
 import plotly
-from io import StringIO
 import pandas as pd
 import numpy as np
 import plotly.subplots as sp
 import plotly.graph_objects as go
-from io import BytesIO
-from colour import Color
 import matplotlib
-from django.http import JsonResponse
-from django.http import FileResponse
 from branca.colormap import linear
 from django.http import HttpResponse
 matplotlib.use('Agg')
