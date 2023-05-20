@@ -28,6 +28,9 @@ def repartition_type_bien(request,df):
     type_counts = df['Type local'].value_counts()
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
+    plt.grid(False)
+    ax.set_ylabel('')
+    plt.axis('off')
     ax.set_title('Répartition des types de biens')
     html_fig = mpld3.fig_to_html(fig)
     fig.clear()
@@ -183,8 +186,7 @@ def evo_m2(request,data):
     temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
                     var_name='Departements', value_name='Value')
 
-    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
-                title='Evolution du prix du mètre carré depuis 2018', color_discrete_sequence=[dth, rec,act])
+    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, color_discrete_sequence=[dth, rec,act])
     retour = plotly.io.to_html(fig)
     plt.close()
     return HttpResponse(retour)
@@ -226,8 +228,7 @@ def evo_m_Carrez (request,df):
     temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré Paris 2018','Prix mètre carré Paris 2019','Prix mètre carré Paris 2022'], 
                     var_name='Departements', value_name='Value')
 
-    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
-                title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
+    fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, color_discrete_sequence=[dth, rec,act])
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
 
@@ -255,7 +256,7 @@ def graph_dynamique_valfonciere(request,data):
                     var_name='Case', value_name='Count').sort_values('Count')
     temp.head()
     fig = px.bar(temp, y='Region', x='Count', color='Case', barmode='group', orientation='h',
-                text='Count', title='Paris - Nord - Alpes-Maritimes', 
+                text='Count', 
                 color_discrete_sequence= [dth, rec, cnf])
     fig.update_traces(textposition='outside')
     #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
@@ -390,7 +391,7 @@ def Nb_piece(request,data):
 
     fig = px.bar(temp.sort_values('Nombre pieces principales', ascending=False).head(10).sort_values('Nombre pieces principales', ascending=True), 
                 x="Nombre pieces principales", y="Code departement", text='Nombre pieces principales', orientation='h', 
-                width=700, height=600, range_x = [0, 7], title='Nombre de piece moyen par departement')
+                width=700, height=600, range_x = [0, 7])
     fig.update_traces(marker_color=act, opacity=0.8, textposition='outside')
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
