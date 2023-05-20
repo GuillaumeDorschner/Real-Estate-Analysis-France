@@ -10,12 +10,10 @@ L'objectif de ce travail est de réaliser une analyse détaillée des données, 
 
 ## Prérequis
 
-Pour pouvoir exécuter le code, il faut installer les packages suivants:
+Au démarrage il faut installer les dépendances du projet. Pour cela il faut exécuter la commande suivante:
 
 ```bash
-pip install pandas
-pip install numpy
-pip install matplotlib
+pip install -r requirements.txt
 ```
 
 ## Exécution du code
