@@ -29,11 +29,9 @@ def repartition_type_bien(request,df):
     fig, ax = plt.subplots(figsize=(10,10))
     type_counts.plot(kind='pie', autopct='%1.1f%%', ax=ax)
     ax.set_title('Répartition des types de biens')
-    plt.grid(False)
-    ax.set_ylabel('')
-    plt.axis('off')
     html_fig = mpld3.fig_to_html(fig)
     fig.clear()
+    plt.close()
     return HttpResponse(html_fig)
 
 def top_5(request,data):
@@ -173,16 +171,14 @@ def evo_m2(request,data):
     act = '#fe9801'
     temp = data[(data["Type local"] != "Dépendance")& (data["Type local"] != "Local industriel. commercial ou assimilé")].reset_index(drop = True)
     temp["Month mutation"] = pd.to_datetime(temp["Date mutation"]).dt.month
-    temp['Prix mètre carré 2018'] = np.nan
-    temp['Prix mètre carré 2019'] = np.nan
-    temp['Prix mètre carré 2022'] = np.nan
-    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2018, 'Prix mètre carré 2018'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
-    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2019, 'Prix mètre carré 2019'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
-    temp.loc[pd.to_datetime(temp["Date mutation"]).dt.year == 2022, 'Prix mètre carré 2022'] = temp["Valeur fonciere"]/temp["Surface reelle bati"]
+    temp['Prix mètre carré 2018'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Surface reelle bati"]
+    temp['Prix mètre carré 2019'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Surface reelle bati"]
+    temp['Prix mètre carré 2022'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Valeur fonciere"]/temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Surface reelle bati"]
 
     temp =temp.replace(np.inf, np.nan)
 
-    temp = temp.groupby('Month mutation')["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"].mean().reset_index()
+    # temp['No. of Recovered to 1 Death Case'] = round(temp['Recovered']/temp['Deaths'], 3)
+    temp = temp.groupby('Month mutation')[["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"]].mean().reset_index()
 
     temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
                     var_name='Departements', value_name='Value')
@@ -192,7 +188,6 @@ def evo_m2(request,data):
     retour = plotly.io.to_html(fig)
     plt.close()
     return HttpResponse(retour)
-
 
 def nb_ventes_par_mois(request,data):
     """Nombre de ventes par mois
@@ -219,19 +214,20 @@ def evo_m_Carrez (request,df):
     temp["Prix mètre carré"] = np.where(temp["carrez_sum"] != 0,temp["Valeur fonciere"]/temp["carrez_sum"],temp["Valeur fonciere"]/temp["Surface reelle bati"])
     temp = temp.drop(np.where(temp['Prix mètre carré'] > 25000)[0])
 
-    temp['Prix mètre carré 2018'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2018]["Prix mètre carré"]
-    temp['Prix mètre carré 2019'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2019]["Prix mètre carré"]
-    temp['Prix mètre carré 2022'] = temp[pd.to_datetime(temp["Date mutation"]).dt.year == 2022]["Prix mètre carré"]
+    temp['Prix mètre carré Paris 2018'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2018)]["Prix mètre carré"]
+    temp['Prix mètre carré Paris 2019'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2019)]["Prix mètre carré"]
+    temp['Prix mètre carré Paris 2022'] = temp[(temp["Code departement"] == '75')&(temp["Date mutation"].dt.year == 2022)]["Prix mètre carré"]
 
     temp =temp.replace(np.inf, np.nan)
 
-    temp = temp.groupby('Month mutation')["Prix mètre carré 2018","Prix mètre carré 2019","Prix mètre carré 2022"].mean().reset_index()
+    # temp['No. of Recovered to 1 Death Case'] = round(temp['Recovered']/temp['Deaths'], 3)
+    temp = temp.groupby('Month mutation')["Prix mètre carré Paris 2018","Prix mètre carré Paris 2019","Prix mètre carré Paris 2022"].mean().reset_index()
 
-    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré 2018','Prix mètre carré 2019','Prix mètre carré 2022'], 
+    temp = temp.melt(id_vars='Month mutation', value_vars=['Prix mètre carré Paris 2018','Prix mètre carré Paris 2019','Prix mètre carré Paris 2022'], 
                     var_name='Departements', value_name='Value')
 
     fig = px.line(temp, x="Month mutation", y="Value", color='Departements', log_y=True, 
-                title='Evolution du prix du mètre carré depuis 2018', color_discrete_sequence=[dth, rec,act])
+                title='Evolution du prix du mètre carré à paris depuis 2018', color_discrete_sequence=[dth, rec,act])
     fig_html = plotly.io.to_html(fig)
     return HttpResponse(fig_html)
 
