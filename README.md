@@ -2,6 +2,10 @@
 
 Ce projet porte sur l'analyse des données des transactions immobilières intervenues au cours des cinq dernières années sur le territoire métropolitain français et les DOM-TOM, à l’exception de l’Alsace, de la Moselle et de Mayotte. Ces données sont tirées des actes notariés et des informations cadastrales, et sont disponibles en open data.
 
+
+https://github.com/GuillaumeDorschner/Analyse-Fonciere/assets/44686652/1428fa97-e847-453f-9872-ae2a5055f569
+
+
 # Objectif du projet
 
 L'objectif de ce travail est de réaliser une analyse détaillée des données, en se concentrant particulièrement sur l'année 2022. L'analyse devrait inclure au moins une vingtaine d'interprétations et de visualisations pertinentes, ainsi que cinq interprétations et visualisations comparant 2022 avec au moins une autre année, en particulier avant la pandémie de COVID.
