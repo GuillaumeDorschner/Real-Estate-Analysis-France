@@ -1,6 +1,6 @@
-# Analyse des Données de Demandes de Valeurs Foncières (DVF)
+# Analysis of French Land Value Request Data (DVF)
 
-Ce projet porte sur l'analyse des données des transactions immobilières intervenues au cours des cinq dernières années sur le territoire métropolitain français et les DOM-TOM, à l’exception de l’Alsace, de la Moselle et de Mayotte. Ces données sont tirées des actes notariés et des informations cadastrales, et sont disponibles en open data.
+This project focuses on analyzing real estate transaction data from the past five years in metropolitan France and its overseas territories, excluding Alsace, Moselle, and Mayotte. These data are derived from notarial deeds and cadastral information and are available as open data.
 
 
 
@@ -8,29 +8,29 @@ https://github.com/GuillaumeDorschner/Analyse-Fonciere/assets/44686652/69ecdb1a-
 
 
 
-# Objectif du projet
+# Project Objective
 
-L'objectif de ce travail est de réaliser une analyse détaillée des données, en se concentrant particulièrement sur l'année 2022. L'analyse devrait inclure au moins une vingtaine d'interprétations et de visualisations pertinentes, ainsi que cinq interprétations et visualisations comparant 2022 avec au moins une autre année, en particulier avant la pandémie de COVID.
+The goal of this project is to conduct a detailed analysis of the data, with a particular focus on the year 2022. The analysis should include at least twenty relevant interpretations and visualizations, as well as five interpretations and visualizations comparing 2022 with at least one other year, especially prior to the COVID pandemic.
 
 # Getting Started
 
-## Prérequis
+## Prerequisites
 
-Au démarrage il faut installer les dépendances du projet. Pour cela il faut exécuter la commande suivante:
+To start, you need to install the project dependencies. To do this, execute the following command:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Exécution du code
+## Code Execution
 
-Pour lancer le server, il faut exécuter le fichier `manage.py` avec la commande suivante:
+To launch the server, execute the `manage.py` file with the following command:
 
 ```bash
 python manage.py runserver
 ```
 
-# Auteurs
+## Authors
 
 - Louis Anne
 - Guillaume Dorschner
